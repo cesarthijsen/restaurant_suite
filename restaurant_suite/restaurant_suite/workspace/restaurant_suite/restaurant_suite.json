@@ -1,0 +1,97 @@
+{
+ "app": "restaurant_suite",
+ "charts": [],
+ "content": "[{\"id\":\"rs_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Restaurant Suite</b></span>\",\"col\":12}},{\"id\":\"rs_group\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Groups\",\"col\":4}},{\"id\":\"rs_option\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Options\",\"col\":4}},{\"id\":\"rs_flow\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Menu Flows\",\"col\":4}},{\"id\":\"rs_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Menu Setup\",\"col\":12}}]",
+ "creation": "2026-08-20 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "coffee",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Restaurant Suite",
+ "links": [
+  {
+   "description": "Configure modifier groups, options, and guided menu flows",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Menu Setup",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Modifier Groups",
+   "link_count": 0,
+   "link_to": "Restaurant Modifier Group",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Modifier Options",
+   "link_count": 0,
+   "link_to": "Restaurant Modifier Option",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Menu Flows",
+   "link_count": 0,
+   "link_to": "Restaurant Menu Flow",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "Restaurant Suite",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 1,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Modifier Groups",
+   "link_to": "Restaurant Modifier Group",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Modifier Options",
+   "link_to": "Restaurant Modifier Option",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Menu Flows",
+   "link_to": "Restaurant Menu Flow",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Restaurant Suite",
+ "type": "Workspace"
+}
