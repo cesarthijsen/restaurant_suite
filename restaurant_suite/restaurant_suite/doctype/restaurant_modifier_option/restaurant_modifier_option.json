@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{modifier_group}-{option_name}",
+ "creation": "2026-08-20 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "option_name",
+  "modifier_group",
+  "description",
+  "item_code",
+  "price_adjustment",
+  "maximum_quantity",
+  "enabled",
+  "sequence"
+ ],
+ "fields": [
+  {
+   "fieldname": "option_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Option Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "modifier_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Modifier Group",
+   "options": "Restaurant Modifier Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "description": "ERPNext Item code to link when ERPNext is installed",
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Inventory Item Code"
+  },
+  {
+   "default": "0",
+   "fieldname": "price_adjustment",
+   "fieldtype": "Currency",
+   "label": "Price Adjustment"
+  },
+  {
+   "default": "0",
+   "fieldname": "maximum_quantity",
+   "fieldtype": "Int",
+   "label": "Maximum Quantity",
+   "non_negative": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence"
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "Restaurant Modifier Option",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "option_name",
+ "track_changes": 1
+}

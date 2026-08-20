@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:group_name",
+ "creation": "2026-08-20 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "group_name",
+  "description",
+  "selection_type",
+  "min_selections",
+  "max_selections",
+  "required",
+  "enabled",
+  "sequence"
+ ],
+ "fields": [
+  {
+   "fieldname": "group_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Group Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "selection_type",
+   "fieldtype": "Select",
+   "label": "Selection Type",
+   "options": "Single\nMultiple\nDynamic",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "min_selections",
+   "fieldtype": "Int",
+   "label": "Minimum Selections",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "max_selections",
+   "fieldtype": "Int",
+   "label": "Maximum Selections",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "required",
+   "fieldtype": "Check",
+   "label": "Required"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence"
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "Restaurant Modifier Group",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "group_name",
+ "track_changes": 1
+}

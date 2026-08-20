@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "creation": "2026-08-20 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "step_name",
+  "modifier_group",
+  "required",
+  "min_selections",
+  "max_selections",
+  "dynamic_limit_from_step",
+  "sequence"
+ ],
+ "fields": [
+  {
+   "fieldname": "step_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Step Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "modifier_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Modifier Group",
+   "options": "Restaurant Modifier Group",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "required",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Required"
+  },
+  {
+   "default": "0",
+   "fieldname": "min_selections",
+   "fieldtype": "Int",
+   "label": "Minimum Selections",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "max_selections",
+   "fieldtype": "Int",
+   "label": "Maximum Selections",
+   "non_negative": 1
+  },
+  {
+   "description": "Step whose selected numeric option controls this step's maximum selections",
+   "fieldname": "dynamic_limit_from_step",
+   "fieldtype": "Data",
+   "label": "Dynamic Limit From Step"
+  },
+  {
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "Restaurant Menu Flow Step",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": []
+}

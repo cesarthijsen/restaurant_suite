@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:flow_name",
+ "creation": "2026-08-20 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "flow_name",
+  "menu_item_code",
+  "description",
+  "enabled",
+  "steps_section",
+  "steps"
+ ],
+ "fields": [
+  {
+   "fieldname": "flow_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Flow Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "ERPNext Item code to link when ERPNext is installed",
+   "fieldname": "menu_item_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Menu Item Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "steps_section",
+   "fieldtype": "Section Break",
+   "label": "Flow Steps"
+  },
+  {
+   "fieldname": "steps",
+   "fieldtype": "Table",
+   "label": "Steps",
+   "options": "Restaurant Menu Flow Step",
+   "reqd": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "Restaurant Menu Flow",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  }
+ ],
+ "states": [],
+ "title_field": "flow_name",
+ "track_changes": 1
+}
