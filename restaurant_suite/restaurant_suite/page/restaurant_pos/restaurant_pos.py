@@ -2,11 +2,11 @@ import frappe
 
 
 @frappe.whitelist()
-def get_pos_data(flow_name="Ice Cream POS"):
+def get_pos_data(flow_name: str = "Ice Cream POS"):
 	"""Return an enabled menu flow and its available modifier options."""
 	flow = frappe.get_doc("Restaurant Menu Flow", flow_name)
 	if not flow.enabled:
-		frappe.throw("The selected menu flow is disabled.")
+		frappe.throw(frappe._("The selected menu flow is disabled."))
 
 	steps = []
 	for step in sorted(flow.steps, key=lambda row: (row.sequence, row.idx)):
