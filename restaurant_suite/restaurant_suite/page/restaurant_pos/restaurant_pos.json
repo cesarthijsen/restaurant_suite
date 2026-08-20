@@ -1,0 +1,25 @@
+{
+ "content": null,
+ "creation": "2026-08-20 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "octicon octicon-device-desktop",
+ "idx": 0,
+ "modified": "2026-08-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Suite",
+ "name": "restaurant-pos",
+ "owner": "Administrator",
+ "page_name": "restaurant-pos",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Restaurant POS"
+}
+
