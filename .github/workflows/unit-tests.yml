@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y mariadb-client redis-tools
+          sudo apt-get install -y mariadb-client redis-tools redis-server
           pip install frappe-bench
 
       - name: Create bench
