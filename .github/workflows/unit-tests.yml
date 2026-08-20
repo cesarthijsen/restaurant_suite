@@ -61,7 +61,10 @@ jobs:
           mv restaurant_suite frappe-bench/apps/restaurant_suite
 
           cd frappe-bench
+
           ./env/bin/pip install -e apps/restaurant_suite
+
+          echo "restaurant_suite" >> sites/apps.txt
 
       - name: Create test site
         run: |
@@ -72,7 +75,7 @@ jobs:
             --db-root-username root \
             --db-root-password root \
             --admin-password admin \
-            --no-mariadb-socket
+            --mariadb-user-host-login-scope='%'
 
           bench --site test_site install-app restaurant_suite
           bench --site test_site set-config allow_tests true
