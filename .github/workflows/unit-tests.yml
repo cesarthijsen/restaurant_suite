@@ -64,7 +64,7 @@ jobs:
 
           ./env/bin/pip install -e apps/restaurant_suite
 
-          echo "restaurant_suite" >> sites/apps.txt
+          printf '\nrestaurant_suite\n' >> sites/apps.txt
 
       - name: Create test site
         run: |
