@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout Restaurant Suite
         uses: actions/checkout@v6
+        with:
+          path: restaurant_suite
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -51,25 +53,31 @@ jobs:
 
       - name: Create bench
         run: |
-          cd ..
-          bench init --frappe-branch version-16 --python python3.14 frappe-bench
+          bench init \
+            --frappe-branch version-16 \
+            --python python3.14 \
+            frappe-bench
+
           mv restaurant_suite frappe-bench/apps/restaurant_suite
+
           cd frappe-bench
           ./env/bin/pip install -e apps/restaurant_suite
 
       - name: Create test site
         run: |
-          cd ../frappe-bench
+          cd frappe-bench
+
           bench new-site test_site \
             --db-host 127.0.0.1 \
             --db-root-username root \
             --db-root-password root \
             --admin-password admin \
             --no-mariadb-socket
+
           bench --site test_site install-app restaurant_suite
           bench --site test_site set-config allow_tests true
 
       - name: Run tests
         run: |
-          cd ../frappe-bench
+          cd frappe-bench
           bench --site test_site run-tests --app restaurant_suite
