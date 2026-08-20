@@ -19,5 +19,7 @@ class TestIceCreamStarter(IntegrationTestCase):
 		)
 
 		flow = frappe.get_doc("Restaurant Menu Flow", "Ice Cream POS")
-		self.assertEqual([step.step_name for step in flow.steps], ["Scoops", "Serving Type", "Flavors", "Toppings"])
+		self.assertEqual(
+			[step.step_name for step in flow.steps], ["Scoops", "Serving Type", "Flavors", "Toppings"]
+		)
 		self.assertEqual(flow.steps[2].dynamic_limit_from_step, "Scoops")

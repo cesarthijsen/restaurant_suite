@@ -1,6 +1,5 @@
 import frappe
 
-
 STARTER_GROUPS = {
 	"Scoop Count": {
 		"selection_type": "Single",
