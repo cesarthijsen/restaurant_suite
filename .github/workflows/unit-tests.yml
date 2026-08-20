@@ -1,0 +1,75 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - version-16
+  pull_request:
+    branches:
+      - version-16
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout Restaurant Suite
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client redis-tools
+          pip install frappe-bench
+
+      - name: Create bench
+        run: |
+          cd ..
+          bench init --frappe-branch version-16 --python python3.14 frappe-bench
+          mv restaurant_suite frappe-bench/apps/restaurant_suite
+          cd frappe-bench
+          ./env/bin/pip install -e apps/restaurant_suite
+
+      - name: Create test site
+        run: |
+          cd ../frappe-bench
+          bench new-site test_site \
+            --db-host 127.0.0.1 \
+            --db-root-username root \
+            --db-root-password root \
+            --admin-password admin \
+            --no-mariadb-socket
+          bench --site test_site install-app restaurant_suite
+          bench --site test_site set-config allow_tests true
+
+      - name: Run tests
+        run: |
+          cd ../frappe-bench
+          bench --site test_site run-tests --app restaurant_suite
