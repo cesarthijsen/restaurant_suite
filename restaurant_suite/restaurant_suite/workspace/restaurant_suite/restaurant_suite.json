@@ -1,7 +1,7 @@
 {
  "app": "restaurant_suite",
  "charts": [],
- "content": "[{\"id\":\"rs_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Restaurant Suite</b></span>\",\"col\":12}},{\"id\":\"rs_group\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Groups\",\"col\":4}},{\"id\":\"rs_option\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Options\",\"col\":4}},{\"id\":\"rs_flow\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Menu Flows\",\"col\":4}},{\"id\":\"rs_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Menu Setup\",\"col\":12}}]",
+ "content": "[{\"id\":\"rs_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Restaurant Suite</b></span>\",\"col\":12}},{\"id\":\"rs_pos\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Restaurant POS\",\"col\":12}},{\"id\":\"rs_group\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Groups\",\"col\":4}},{\"id\":\"rs_option\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Modifier Options\",\"col\":4}},{\"id\":\"rs_flow\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Menu Flows\",\"col\":4}},{\"id\":\"rs_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Menu Setup\",\"col\":12}}]",
  "creation": "2026-08-20 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -68,6 +68,12 @@
  "sequence_id": 1,
  "shortcuts": [
   {
+   "color": "Blue",
+   "label": "Open Restaurant POS",
+   "link_to": "restaurant-pos",
+   "type": "Page"
+  },
+  {
    "color": "Grey",
    "doc_view": "List",
    "label": "Modifier Groups",
@@ -95,3 +101,4 @@
  "title": "Restaurant Suite",
  "type": "Workspace"
 }
+
