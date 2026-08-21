@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 
 @frappe.whitelist()
 def clock_with_pin(pin: str):
+	frappe.only_for(("System Manager", "HR Manager", "HR User"))
 	pin = str(pin or "").strip()
 	if not pin.isdigit() or not 4 <= len(pin) <= 8:
 		frappe.throw(frappe._("Invalid PIN."))
@@ -39,7 +40,6 @@ def clock_with_pin(pin: str):
 			"device_id": "Restaurant PIN Clock",
 		}
 	).insert(ignore_permissions=True)
-	frappe.db.commit()
 	return {
 		"employee": credential.employee,
 		"employee_name": credential.employee_name,
