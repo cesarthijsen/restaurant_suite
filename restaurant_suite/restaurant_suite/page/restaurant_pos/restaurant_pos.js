@@ -40,26 +40,26 @@ class RestaurantPOS {
 		$("<style id='restaurant-pos-styles'>")
 			.text(
 				`
-			.restaurant-pos { --wine:#9d174d; --cream:#211a20; --panel:#181318; --card:#2b222a; --ink:#fff8f4; --muted:#c7b8c1; --coral:#ee5b5b; max-width:1440px; margin:0 auto; padding:22px; min-height:calc(100vh - 120px); border-radius:22px; background:linear-gradient(145deg,#120f13,#241820); color:var(--ink); }
+			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; max-width:1440px; margin:0 auto; padding:18px; }
 			.pos-brand { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
-			.pos-brand h2 { color:#f9a8c4; font-size:28px; font-weight:800; margin:0; } .pos-brand .text-muted{color:var(--muted)!important}.pos-brand-actions{display:flex;gap:10px}.pos-clock{background:#3b2835!important;color:#fff!important;border-color:#6f405d!important}
+			.pos-brand h2 { color:var(--wine); font-size:28px; font-weight:800; margin:0; }
 			.pos-layout { display:grid; grid-template-columns:minmax(0,2fr) minmax(330px,1fr); gap:18px; }
-			.pos-shop,.pos-cart { background:var(--panel); border:1px solid #493743; border-radius:18px; padding:18px; box-shadow:0 12px 32px rgba(0,0,0,.28); }
+			.pos-shop,.pos-cart { background:var(--cream); border:1px solid #eadfd5; border-radius:18px; padding:18px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
 			.pos-categories { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
-			.pos-category { border:1px solid #57414f; background:#2a2028; color:#f8edf3; border-radius:14px; padding:13px 18px; font-size:15px; font-weight:700; white-space:nowrap; }
+			.pos-category { border:1px solid #e4d6cf; background:white; color:#3d2530; border-radius:14px; padding:13px 18px; font-size:15px; font-weight:700; white-space:nowrap; }
 			.pos-category.active { background:var(--wine); border-color:var(--wine); color:white; }
 			.pos-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px; }
-			.pos-product { border:1px solid #4d3947; background:var(--card); border-radius:16px; padding:0; overflow:hidden; text-align:left; min-height:205px; transition:.16s ease; }
+			.pos-product { border:1px solid #eadfd5; background:white; border-radius:16px; padding:0; overflow:hidden; text-align:left; min-height:205px; transition:.16s ease; }
 			.pos-product:hover { transform:translateY(-2px); border-color:var(--wine); box-shadow:0 9px 22px rgba(114,0,43,.12); }
-			.pos-product-art { height:112px; display:grid; place-items:center; font-size:54px; background:linear-gradient(145deg,#3a2935,#211920); }
+			.pos-product-art { height:112px; display:grid; place-items:center; font-size:54px; background:linear-gradient(145deg,#fff,#f8e7df); }
 			.pos-product-info { padding:13px; }
-			.pos-product strong { display:block; color:#fff8fb; font-size:15px; min-height:38px; }
-			.pos-price { color:#f9a8c4; font-weight:800; margin-top:8px; }
-			.pos-price small { color:#cbbbc4; font-weight:600; margin-left:5px; }
+			.pos-product strong { display:block; color:#2f1e27; font-size:15px; min-height:38px; }
+			.pos-price { color:var(--wine); font-weight:800; margin-top:8px; }
+			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
 			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
-			.pos-cart { background:#171217; display:flex; flex-direction:column; min-height:620px; }
+			.pos-cart { background:white; display:flex; flex-direction:column; min-height:620px; }
 			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
-			.pos-cart-title h3 { margin:0; color:#fff8fb; }
+			.pos-cart-title h3 { margin:0; color:#2f1e27; }
 			.pos-cart-items { flex:1; }
 			.pos-cart-row { display:grid; grid-template-columns:1fr auto; gap:10px; padding:14px 0; border-bottom:1px solid #eee5df; }
 			.pos-cart-row strong { display:block; }
@@ -78,8 +78,8 @@ class RestaurantPOS {
 			.pos-progress button { border:0; border-radius:999px; padding:9px 13px; white-space:nowrap; background:#eadfd5; color:#6f5a63; }
 			.pos-progress button.active { background:var(--wine); color:white; }
 			.pos-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:18px 0; }
-			.pos-option { min-height:88px; border:2px solid #513c4a; border-radius:13px; background:#2b222a; color:#fff; padding:13px; text-align:left; }
-			.pos-option.selected { border-color:#f472a6; background:#54233b; }
+			.pos-option { min-height:88px; border:2px solid #eadfd5; border-radius:13px; background:white; padding:13px; text-align:left; }
+			.pos-option.selected { border-color:var(--wine); background:#fff0f4; }
 			.pos-option strong,.pos-option small { display:block; }
 			.pos-option small { color:#7f6d74; margin-top:6px; }
 			.pos-actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
