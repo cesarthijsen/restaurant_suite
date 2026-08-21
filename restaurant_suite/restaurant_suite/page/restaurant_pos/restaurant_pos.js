@@ -4,14 +4,15 @@ frappe.pages["restaurant-pos"].on_page_load = function (wrapper) {
 		title: __("Restaurant POS"),
 		single_column: true,
 	});
-
 	new RestaurantPOS(wrapper);
 };
 
 class RestaurantPOS {
 	constructor(wrapper) {
-		this.wrapper = wrapper;
 		this.page = wrapper.page;
+		this.cart = [];
+		this.active_category = 0;
+		this.customizing = null;
 		this.selections = {};
 		this.current_step = 0;
 		this.add_styles();
@@ -24,14 +25,13 @@ class RestaurantPOS {
 			const response = await frappe.call({
 				method: "restaurant_suite.restaurant_suite.page.restaurant_pos.restaurant_pos.get_pos_data",
 			});
-			this.flow = response.message;
+			this.data = response.message;
 			this.page.set_indicator(__("Ready"), "green");
+			this.$root = $("<div class='restaurant-pos'>").appendTo(this.page.main.empty());
 			this.render();
 		} catch (error) {
 			this.page.set_indicator(__("Error"), "red");
-			frappe.msgprint(
-				__("Restaurant POS could not load. Check that Ice Cream POS is enabled.")
-			);
+			frappe.msgprint(__("Restaurant POS could not load."));
 		}
 	}
 
@@ -40,115 +40,160 @@ class RestaurantPOS {
 		$("<style id='restaurant-pos-styles'>")
 			.text(
 				`
-			.restaurant-pos { max-width: 1180px; margin: 0 auto; padding: 18px; }
-			.pos-header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
-			.pos-header h2 { margin:0; font-weight:700; }
-			.pos-layout { display:grid; grid-template-columns:minmax(0, 2fr) minmax(280px, 1fr); gap:18px; }
-			.pos-panel { background:var(--card-bg); border:1px solid var(--border-color); border-radius:14px; padding:20px; }
-			.pos-progress { display:flex; gap:8px; margin-bottom:22px; overflow-x:auto; }
-			.pos-progress button { border:0; border-radius:999px; padding:8px 14px; white-space:nowrap; background:var(--control-bg); color:var(--text-muted); }
-			.pos-progress button.active { background:var(--primary); color:white; }
-			.pos-options { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin:18px 0; }
-			.pos-option { min-height:92px; border:2px solid var(--border-color); border-radius:12px; background:var(--card-bg); padding:14px; text-align:left; transition:.15s ease; }
-			.pos-option:hover { border-color:var(--primary); transform:translateY(-1px); }
-			.pos-option.selected { border-color:var(--primary); background:var(--blue-50); }
-			.pos-option strong { display:block; font-size:16px; }
-			.pos-option small { color:var(--text-muted); }
-			.pos-actions { display:flex; justify-content:space-between; gap:12px; margin-top:18px; }
-			.pos-summary h4 { margin-top:0; }
-			.pos-summary-row { padding:11px 0; border-bottom:1px solid var(--border-color); }
-			.pos-summary-row strong { display:block; }
-			.pos-empty { color:var(--text-muted); }
-			.pos-complete { text-align:center; padding:34px 10px; }
-			.pos-complete .octicon { font-size:46px; color:var(--green-500); }
-			@media (max-width: 760px) { .pos-layout { grid-template-columns:1fr; } .restaurant-pos { padding:8px; } }
+			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; max-width:1440px; margin:0 auto; padding:18px; }
+			.pos-brand { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
+			.pos-brand h2 { color:var(--wine); font-size:28px; font-weight:800; margin:0; }
+			.pos-layout { display:grid; grid-template-columns:minmax(0,2fr) minmax(330px,1fr); gap:18px; }
+			.pos-shop,.pos-cart { background:var(--cream); border:1px solid #eadfd5; border-radius:18px; padding:18px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
+			.pos-categories { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
+			.pos-category { border:1px solid #e4d6cf; background:white; color:#3d2530; border-radius:14px; padding:13px 18px; font-size:15px; font-weight:700; white-space:nowrap; }
+			.pos-category.active { background:var(--wine); border-color:var(--wine); color:white; }
+			.pos-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px; }
+			.pos-product { border:1px solid #eadfd5; background:white; border-radius:16px; padding:0; overflow:hidden; text-align:left; min-height:205px; transition:.16s ease; }
+			.pos-product:hover { transform:translateY(-2px); border-color:var(--wine); box-shadow:0 9px 22px rgba(114,0,43,.12); }
+			.pos-product-art { height:112px; display:grid; place-items:center; font-size:54px; background:linear-gradient(145deg,#fff,#f8e7df); }
+			.pos-product-info { padding:13px; }
+			.pos-product strong { display:block; color:#2f1e27; font-size:15px; min-height:38px; }
+			.pos-price { color:var(--wine); font-weight:800; margin-top:8px; }
+			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
+			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
+			.pos-cart { background:white; display:flex; flex-direction:column; min-height:620px; }
+			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
+			.pos-cart-title h3 { margin:0; color:#2f1e27; }
+			.pos-cart-items { flex:1; }
+			.pos-cart-row { display:grid; grid-template-columns:1fr auto; gap:10px; padding:14px 0; border-bottom:1px solid #eee5df; }
+			.pos-cart-row strong { display:block; }
+			.pos-modifiers { color:#84737a; font-size:12px; margin-top:3px; }
+			.pos-qty { display:flex; align-items:center; gap:8px; margin-top:7px; }
+			.pos-qty button { width:28px; height:28px; border:1px solid #ddd0cb; background:#fff8f3; border-radius:8px; }
+			.pos-line-price { color:var(--wine); font-weight:800; text-align:right; }
+			.pos-remove { border:0; background:transparent; color:#d44; margin-top:8px; }
+			.pos-empty { color:#8a777e; text-align:center; padding:80px 15px; }
+			.pos-totals { border-top:2px solid #eadfd5; margin-top:12px; padding-top:12px; }
+			.pos-total-line { display:flex; justify-content:space-between; padding:5px 0; }
+			.pos-total-line.final { color:var(--wine); font-size:21px; font-weight:800; }
+			.pos-complete { width:100%; border:0; border-radius:13px; padding:15px; margin-top:12px; background:#2faa4b; color:white; font-size:17px; font-weight:800; }
+			.pos-complete:disabled { opacity:.45; }
+			.pos-progress { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; }
+			.pos-progress button { border:0; border-radius:999px; padding:9px 13px; white-space:nowrap; background:#eadfd5; color:#6f5a63; }
+			.pos-progress button.active { background:var(--wine); color:white; }
+			.pos-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:18px 0; }
+			.pos-option { min-height:88px; border:2px solid #eadfd5; border-radius:13px; background:white; padding:13px; text-align:left; }
+			.pos-option.selected { border-color:var(--wine); background:#fff0f4; }
+			.pos-option strong,.pos-option small { display:block; }
+			.pos-option small { color:#7f6d74; margin-top:6px; }
+			.pos-actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
+			@media(max-width:900px){.pos-layout{grid-template-columns:1fr}.pos-cart{min-height:420px}}
+			@media(max-width:560px){.restaurant-pos{padding:7px}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:180px}.pos-product-art{height:90px}}
 		`
 			)
 			.appendTo("head");
 	}
 
 	render() {
-		this.$root = $("<div class='restaurant-pos'>").appendTo(this.page.main.empty());
-		this.render_step();
-	}
-
-	render_step() {
-		const step = this.flow.steps[this.current_step];
-		const completed = this.current_step >= this.flow.steps.length;
 		this.$root.empty();
 		this.$root.append(`
-			<div class="pos-header">
-				<div><h2>${frappe.utils.escape_html(
-					this.flow.flow_name
-				)}</h2><div class="text-muted">${frappe.utils.escape_html(
-			this.flow.description || ""
+			<div class="pos-brand">
+				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__(
+			"Ice cream, pastry, drinks & coffee"
 		)}</div></div>
-				<button class="btn btn-default pos-reset">${__("Start Over")}</button>
+				<button class="btn btn-default pos-clear">${__("Clear Order")}</button>
 			</div>
 		`);
-		this.$root.find(".pos-reset").on("click", () => this.reset());
-
+		this.$root.find(".pos-clear").on("click", () => this.clear_order());
 		const $layout = $("<div class='pos-layout'>").appendTo(this.$root);
-		const $main = $("<div class='pos-panel'>").appendTo($layout);
-		this.render_progress($main);
-		if (completed) this.render_complete($main);
-		else this.render_options($main, step);
-		this.render_summary($("<aside class='pos-panel pos-summary'>").appendTo($layout));
+		const $shop = $("<section class='pos-shop'>").appendTo($layout);
+		if (this.customizing) this.render_customizer($shop);
+		else this.render_catalog($shop);
+		this.render_cart($("<aside class='pos-cart'>").appendTo($layout));
 	}
 
-	render_progress($container) {
+	render_catalog($container) {
+		const $tabs = $("<div class='pos-categories'>").appendTo($container);
+		this.data.catalog.forEach((category, index) => {
+			const $button = $("<button type='button' class='pos-category'>")
+				.text(`${category.icon} ${category.name}`)
+				.toggleClass("active", index === this.active_category)
+				.on("click", () => {
+					this.active_category = index;
+					this.render();
+				});
+			$button.appendTo($tabs);
+		});
+
+		const category = this.data.catalog[this.active_category];
+		const $grid = $("<div class='pos-products'>").appendTo($container);
+		category.products.forEach((product) => {
+			const $card = $("<button type='button' class='pos-product'>");
+			$card.append($("<div class='pos-product-art'>").text(product.icon));
+			const $info = $("<div class='pos-product-info'>").appendTo($card);
+			$info.append($("<strong>").text(product.name));
+			$info.append(
+				$("<div class='pos-price'>").html(
+					`${this.money(product.price_awg, "AWG")} <small>${this.money(
+						product.price_usd,
+						"USD"
+					)}</small>`
+				)
+			);
+			if (product.demo_price)
+				$info.append($("<span class='pos-demo-price'>").text(__("Temporary demo price")));
+			$card.on("click", () => this.select_product(product)).appendTo($grid);
+		});
+	}
+
+	select_product(product) {
+		if (product.scoop_option) {
+			this.customizing = product;
+			this.selections = { Scoops: [this.find_option("Scoops", product.scoop_option).name] };
+			this.current_step = 1;
+			this.render();
+			return;
+		}
+		this.add_to_cart(product, []);
+	}
+
+	render_customizer($container) {
+		const flow = this.data.flow;
+		const step = flow.steps[this.current_step];
+		$container.append(`<h3>${frappe.utils.escape_html(this.customizing.name)}</h3>`);
 		const $progress = $("<div class='pos-progress'>").appendTo($container);
-		this.flow.steps.forEach((step, index) => {
-			const $button = $("<button type='button'>").text(`${index + 1}. ${step.step_name}`);
-			if (index === this.current_step) $button.addClass("active");
-			if (index <= this.current_step)
+		flow.steps.forEach((row, index) => {
+			const $button = $("<button type='button'>").text(`${index + 1}. ${row.step_name}`);
+			$button.toggleClass("active", index === this.current_step);
+			if (index > 0 && index <= this.current_step)
 				$button.on("click", () => {
 					this.current_step = index;
-					this.render_step();
+					this.render();
 				});
 			$button.appendTo($progress);
 		});
-	}
 
-	render_options($container, step) {
-		const limit = this.get_limit(step);
-		const instruction = step.required
-			? __("Required — choose {0}", [
-					limit === 1 ? __("one") : __("up to {0}", [limit || __("any number")]),
-			  ])
-			: __("Optional");
-		$container.append(
-			`<h3>${frappe.utils.escape_html(
-				step.step_name
-			)}</h3><div class="text-muted">${instruction}</div>`
-		);
+		$container.append(`<h4>${frappe.utils.escape_html(step.step_name)}</h4>`);
 		const $options = $("<div class='pos-options'>").appendTo($container);
 		const selected = this.selections[step.step_name] || [];
 		step.options.forEach((option) => {
-			const price = flt(option.price_adjustment);
 			const $button = $("<button type='button' class='pos-option'>");
 			$button.append($("<strong>").text(option.option_name));
-			$button.append($("<small>").text(price ? format_currency(price) : __("Included")));
+			$button.append($("<small>").text(__("Included")));
 			$button.toggleClass("selected", selected.includes(option.name));
-			$button.on("click", () => this.toggle_option(step, option.name));
-			$button.appendTo($options);
+			$button.on("click", () => this.toggle_option(step, option.name)).appendTo($options);
 		});
 
 		const $actions = $("<div class='pos-actions'>").appendTo($container);
-		const $back = $(`<button class="btn btn-default">${__("Back")}</button>`).appendTo(
-			$actions
-		);
-		$back.prop("disabled", this.current_step === 0).on("click", () => {
-			this.current_step -= 1;
-			this.render_step();
-		});
+		$(`<button class="btn btn-default">${__("Cancel")}</button>`)
+			.on("click", () => {
+				this.customizing = null;
+				this.render();
+			})
+			.appendTo($actions);
 		$(
 			`<button class="btn btn-primary">${
-				this.current_step === this.flow.steps.length - 1 ? __("Review Order") : __("Next")
+				this.current_step === flow.steps.length - 1 ? __("Add to Order") : __("Next")
 			}</button>`
 		)
-			.appendTo($actions)
-			.on("click", () => this.next());
+			.on("click", () => this.next_step())
+			.appendTo($actions);
 	}
 
 	toggle_option(step, option_name) {
@@ -168,22 +213,21 @@ class RestaurantPOS {
 			selected = [...selected, option_name];
 		}
 		this.selections[step.step_name] = selected;
-		this.render_step();
+		this.render();
 	}
 
 	get_limit(step) {
 		if (!step.dynamic_limit_from_step) return cint(step.max_selections);
 		const source = this.selections[step.dynamic_limit_from_step] || [];
-		if (!source.length) return 0;
-		const source_step = this.flow.steps.find(
+		const source_step = this.data.flow.steps.find(
 			(row) => row.step_name === step.dynamic_limit_from_step
 		);
 		const option = source_step.options.find((row) => row.name === source[0]);
 		return cint(((option && option.option_name.match(/\d+/)) || [0])[0]);
 	}
 
-	next() {
-		const step = this.flow.steps[this.current_step];
+	next_step() {
+		const step = this.data.flow.steps[this.current_step];
 		const count = (this.selections[step.step_name] || []).length;
 		const minimum = cint(step.min_selections) || (step.required ? 1 : 0);
 		if (count < minimum) {
@@ -193,49 +237,147 @@ class RestaurantPOS {
 			});
 			return;
 		}
-		this.current_step += 1;
-		this.render_step();
-	}
-
-	render_summary($container) {
-		$container.append(
-			`<h4>${__("Order Summary")}</h4><div class="text-muted">${frappe.utils.escape_html(
-				this.flow.menu_item_code
-			)}</div>`
-		);
-		let has_selection = false;
-		this.flow.steps.forEach((step) => {
-			const names = this.selections[step.step_name] || [];
-			if (!names.length) return;
-			has_selection = true;
-			const labels = names.map(
-				(name) => step.options.find((option) => option.name === name)?.option_name || name
-			);
-			const $row = $("<div class='pos-summary-row'>").appendTo($container);
-			$row.append($("<strong>").text(step.step_name));
-			$row.append($("<span>").text(labels.join(", ")));
-		});
-		if (!has_selection)
-			$container.append(
-				`<p class="pos-empty">${__("Your selections will appear here.")}</p>`
-			);
-	}
-
-	render_complete($container) {
-		$container.append(`
-			<div class="pos-complete">
-				<span class="octicon octicon-check-circle"></span>
-				<h3>${__("Order Ready")}</h3>
-				<p class="text-muted">${__("The ice-cream configuration is complete.")}</p>
-				<button class="btn btn-primary pos-new-order">${__("New Order")}</button>
-			</div>
-		`);
-		$container.find(".pos-new-order").on("click", () => this.reset());
-	}
-
-	reset() {
+		if (this.current_step < this.data.flow.steps.length - 1) {
+			this.current_step += 1;
+			this.render();
+			return;
+		}
+		const modifiers = this.data.flow.steps
+			.map((row) => {
+				const labels = (this.selections[row.step_name] || []).map(
+					(name) =>
+						row.options.find((option) => option.name === name)?.option_name || name
+				);
+				return labels.length ? `${row.step_name}: ${labels.join(", ")}` : null;
+			})
+			.filter(Boolean);
+		this.add_to_cart(this.customizing, modifiers);
+		this.customizing = null;
 		this.selections = {};
 		this.current_step = 0;
-		this.render_step();
+		this.render();
+	}
+
+	find_option(step_name, option_label) {
+		const step = this.data.flow.steps.find((row) => row.step_name === step_name);
+		return step.options.find((option) => option.option_name === option_label);
+	}
+
+	add_to_cart(product, modifiers) {
+		const key = `${product.code}|${modifiers.join("|")}`;
+		const existing = this.cart.find((item) => item.key === key);
+		if (existing) existing.quantity += 1;
+		else this.cart.push({ ...product, key, modifiers, quantity: 1 });
+		frappe.show_alert({ message: __("Added {0}", [product.name]), indicator: "green" });
+		this.render();
+	}
+
+	render_cart($container) {
+		const $title = $("<div class='pos-cart-title'>").appendTo($container);
+		$title.append(`<h3>${__("Order Summary")}</h3>`);
+		$title.append($("<span class='text-muted'>").text(__("{0} item(s)", [this.item_count()])));
+		const $items = $("<div class='pos-cart-items'>").appendTo($container);
+		if (!this.cart.length)
+			$items.append(`<div class="pos-empty">🛒<br>${__("Tap a product to begin")}</div>`);
+		this.cart.forEach((item) => {
+			const $row = $("<div class='pos-cart-row'>").appendTo($items);
+			const $details = $("<div>").appendTo($row);
+			$details.append($("<strong>").text(item.name));
+			if (item.modifiers.length)
+				$details.append($("<div class='pos-modifiers'>").text(item.modifiers.join(" · ")));
+			const $qty = $("<div class='pos-qty'>").appendTo($details);
+			$("<button type='button'>")
+				.text("−")
+				.on("click", () => this.change_qty(item.key, -1))
+				.appendTo($qty);
+			$qty.append($("<span>").text(item.quantity));
+			$("<button type='button'>")
+				.text("+")
+				.on("click", () => this.change_qty(item.key, 1))
+				.appendTo($qty);
+			const $right = $("<div>").appendTo($row);
+			$right.append(
+				$("<div class='pos-line-price'>").text(
+					this.money(item.price_awg * item.quantity, "AWG")
+				)
+			);
+			$("<button type='button' class='pos-remove'>")
+				.text(__("Remove"))
+				.on("click", () => this.remove_item(item.key))
+				.appendTo($right);
+		});
+
+		const totals = this.totals();
+		const $totals = $("<div class='pos-totals'>").appendTo($container);
+		$totals.append(
+			`<div class="pos-total-line"><span>${__("Subtotal")}</span><strong>${this.money(
+				totals.awg,
+				"AWG"
+			)}</strong></div>`
+		);
+		$totals.append(
+			`<div class="pos-total-line final"><span>${__("Total")}</span><span>${this.money(
+				totals.awg,
+				"AWG"
+			)}</span></div>`
+		);
+		$totals.append(
+			`<div class="pos-total-line"><span>${__("USD reference")}</span><strong>${this.money(
+				totals.usd,
+				"USD"
+			)}</strong></div>`
+		);
+		$(`<button class="pos-complete">${__("Complete Order")}</button>`)
+			.prop("disabled", !this.cart.length)
+			.on("click", () => this.complete_order())
+			.appendTo($container);
+	}
+
+	change_qty(key, amount) {
+		const item = this.cart.find((row) => row.key === key);
+		item.quantity += amount;
+		if (item.quantity < 1) this.remove_item(key);
+		else this.render();
+	}
+
+	remove_item(key) {
+		this.cart = this.cart.filter((item) => item.key !== key);
+		this.render();
+	}
+
+	clear_order() {
+		if (!this.cart.length) return;
+		frappe.confirm(__("Clear the current order?"), () => {
+			this.cart = [];
+			this.render();
+		});
+	}
+
+	complete_order() {
+		frappe.msgprint({
+			title: __("Demo Order Ready"),
+			message: __(
+				"The cart is complete. The next phase will create the ERPNext POS Invoice and accept payment."
+			),
+			indicator: "green",
+		});
+	}
+
+	item_count() {
+		return this.cart.reduce((total, item) => total + item.quantity, 0);
+	}
+
+	totals() {
+		return this.cart.reduce(
+			(total, item) => ({
+				awg: total.awg + flt(item.price_awg) * item.quantity,
+				usd: total.usd + flt(item.price_usd) * item.quantity,
+			}),
+			{ awg: 0, usd: 0 }
+		);
+	}
+
+	money(value, currency) {
+		return `${currency} ${flt(value).toFixed(2)}`;
 	}
 }
