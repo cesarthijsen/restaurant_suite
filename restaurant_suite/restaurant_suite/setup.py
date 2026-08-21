@@ -42,6 +42,7 @@ STARTER_GROUPS = {
 			"Lemon Sorbet",
 			"Mango Sorbet",
 			"Raspberry Sorbet",
+			"Rocky Road",
 			"Strawberry",
 			"Strawberry Cheesecake",
 			"Strawberry Mochi",
