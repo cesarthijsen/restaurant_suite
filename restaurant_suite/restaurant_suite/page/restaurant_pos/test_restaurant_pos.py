@@ -13,7 +13,7 @@ class TestRestaurantPOS(FrappeTestCase):
 
 		self.assertEqual(
 			[category["name"] for category in data["catalog"]],
-			["Scoops", "Pastry", "Fresh & Fruity", "Barista", "Water"],
+			["Scoops", "Pastry", "Fresh & Fruity", "Barista", "Water & Soft Drinks"],
 		)
 		self.assertEqual(data["catalog"][0]["products"][0]["price_awg"], 9.63)
 		self.assertEqual(data["catalog"][2]["products"][0]["price_usd"], 12.59)

@@ -1,6 +1,5 @@
 import frappe
 
-
 CATALOG = [
 	{
 		"name": "Scoops",
@@ -39,7 +38,7 @@ CATALOG = [
 			},
 			{
 				"code": "PINT",
-				"name": "Pint (1–2 Flavors)",
+				"name": "Pint (1-2 Flavors)",
 				"price_awg": 23.65,
 				"price_usd": 13.50,
 				"icon": "🥄",
@@ -85,6 +84,38 @@ CATALOG = [
 				"price_awg": 25.40,
 				"price_usd": 14.50,
 				"icon": "🥞",
+			},
+			{
+				"code": "CARROT-CAKE",
+				"name": "Carrot Cake",
+				"price_awg": 10.50,
+				"price_usd": 6.00,
+				"icon": "🍰",
+				"demo_price": True,
+			},
+			{
+				"code": "CHOCOLATE-CAKE",
+				"name": "Chocolate Cake",
+				"price_awg": 10.50,
+				"price_usd": 6.00,
+				"icon": "🍰",
+				"demo_price": True,
+			},
+			{
+				"code": "BROWNIE",
+				"name": "Brownie",
+				"price_awg": 8.75,
+				"price_usd": 5.00,
+				"icon": "🍫",
+				"demo_price": True,
+			},
+			{
+				"code": "CHOC-CHIP-COOKIE",
+				"name": "Chocolate Chip Cookie",
+				"price_awg": 6.15,
+				"price_usd": 3.50,
+				"icon": "🍪",
+				"demo_price": True,
 			},
 		],
 	},
@@ -183,7 +214,7 @@ CATALOG = [
 		],
 	},
 	{
-		"name": "Water",
+		"name": "Water & Soft Drinks",
 		"icon": "💧",
 		"products": [
 			{
@@ -200,6 +231,22 @@ CATALOG = [
 				"price_awg": 5.25,
 				"price_usd": 3.00,
 				"icon": "💧",
+				"demo_price": True,
+			},
+			{
+				"code": "SOFT-DRINK-CAN",
+				"name": "Soft Drink — Can",
+				"price_awg": 5.25,
+				"price_usd": 3.00,
+				"icon": "🥤",
+				"demo_price": True,
+			},
+			{
+				"code": "SOFT-DRINK-BOTTLE",
+				"name": "Soft Drink — Bottle",
+				"price_awg": 7.00,
+				"price_usd": 4.00,
+				"icon": "🥤",
 				"demo_price": True,
 			},
 		],
