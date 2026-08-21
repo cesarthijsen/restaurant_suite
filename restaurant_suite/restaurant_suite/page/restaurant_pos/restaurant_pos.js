@@ -11,6 +11,8 @@ class RestaurantPOS {
 	constructor(wrapper) {
 		this.page = wrapper.page;
 		this.cart = [];
+		this.cashier = null;
+		this.cashier_pin = "";
 		this.active_category = 0;
 		this.customizing = null;
 		this.selections = {};
@@ -83,6 +85,10 @@ class RestaurantPOS {
 			.pos-option strong,.pos-option small { display:block; }
 			.pos-option small { color:#7f6d74; margin-top:6px; }
 			.pos-actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
+			.pos-login-wrap { min-height:65vh; display:grid; place-items:center; }
+			.pos-login-card { width:min(420px,100%); background:white; border:1px solid #eadfd5; border-radius:20px; padding:28px; text-align:center; box-shadow:0 10px 30px rgba(64,25,30,.1); }
+			.pos-login-card h2 { color:var(--wine); font-weight:800; }.pos-login-pin { width:100%; height:58px; text-align:center; font-size:30px; letter-spacing:12px; border:2px solid #dccbd3; border-radius:12px; margin:12px 0 18px; }
+			.pos-login-keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }.pos-login-keypad button { min-height:56px; border:1px solid #dfd0d6; border-radius:12px; background:#fff8fb; font-size:20px; font-weight:700; }.pos-login-submit { width:100%; min-height:50px; margin-top:14px; }.pos-cashier { color:#72002b; font-weight:700; }
 			@media(max-width:900px){.pos-layout{grid-template-columns:1fr}.pos-cart{min-height:420px}}
 			@media(max-width:560px){.restaurant-pos{padding:7px}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:180px}.pos-product-art{height:90px}}
 		`
@@ -92,21 +98,56 @@ class RestaurantPOS {
 
 	render() {
 		this.$root.empty();
+		if (!this.cashier) {
+			this.render_cashier_login();
+			return;
+		}
 		this.$root.append(`
 			<div class="pos-brand">
-				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__(
-			"Ice cream, pastry, drinks & coffee"
-		)}</div></div>
-				<div class="pos-brand-actions"><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button></div>
+				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__("Ice cream, pastry, drinks & coffee")}</div><div class="pos-cashier">${__("Cashier")}: ${frappe.utils.escape_html(this.cashier.employee_name)}</div></div>
+				<div class="pos-brand-actions"><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-lock">${__("Lock POS")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button></div>
 			</div>
 		`);
 		this.$root.find(".pos-clock").on("click", () => frappe.set_route("restaurant-time-clock"));
+		this.$root.find(".pos-lock").on("click", () => this.lock_pos());
 		this.$root.find(".pos-clear").on("click", () => this.clear_order());
 		const $layout = $("<div class='pos-layout'>").appendTo(this.$root);
 		const $shop = $("<section class='pos-shop'>").appendTo($layout);
 		if (this.customizing) this.render_customizer($shop);
 		else this.render_catalog($shop);
 		this.render_cart($("<aside class='pos-cart'>").appendTo($layout));
+	}
+
+	render_cashier_login() {
+		this.$root.html(`<div class="pos-login-wrap"><div class="pos-login-card"><div style="font-size:48px">🔐</div><h2>${__("Cashier Login")}</h2><p class="text-muted">${__("Enter your employee PIN")}</p><input class="pos-login-pin" type="password" readonly aria-label="${__("Employee PIN")}"><div class="pos-login-keypad"></div><button class="btn btn-primary btn-lg pos-login-submit">${__("Unlock POS")}</button></div></div>`);
+		const $pad = this.$root.find(".pos-login-keypad");
+		["1","2","3","4","5","6","7","8","9","Clear","0","⌫"].forEach((key) => $("<button type='button'>").text(__(key)).on("click", () => this.press_cashier_pin(key)).appendTo($pad));
+		this.$root.find(".pos-login-submit").on("click", () => this.authenticate_cashier());
+	}
+
+	press_cashier_pin(key) {
+		if (key === "Clear") this.cashier_pin = "";
+		else if (key === "⌫") this.cashier_pin = this.cashier_pin.slice(0, -1);
+		else if (this.cashier_pin.length < 8) this.cashier_pin += key;
+		this.$root.find(".pos-login-pin").val(this.cashier_pin);
+	}
+
+	async authenticate_cashier() {
+		if (this.cashier_pin.length < 4) return frappe.show_alert({ message: __("Enter at least 4 digits."), indicator: "orange" });
+		const $button = this.$root.find(".pos-login-submit").prop("disabled", true);
+		try {
+			const response = await frappe.call({ method: "restaurant_suite.restaurant_suite.page.restaurant_pos.restaurant_pos.authenticate_cashier", args: { pin: this.cashier_pin } });
+			this.cashier = response.message;
+			this.cashier_pin = "";
+			frappe.show_alert({ message: __("Welcome, {0}", [this.cashier.employee_name]), indicator: "green" });
+			this.render();
+		} finally { $button.prop("disabled", false); }
+	}
+
+	lock_pos() {
+		const lock = () => { this.cart = []; this.cashier = null; this.cashier_pin = ""; this.customizing = null; this.render(); };
+		if (this.cart.length) frappe.confirm(__("Lock the POS and clear the current order?"), lock);
+		else lock();
 	}
 
 	render_catalog($container) {
@@ -357,9 +398,7 @@ class RestaurantPOS {
 	complete_order() {
 		frappe.msgprint({
 			title: __("Demo Order Ready"),
-			message: __(
-				"The cart is complete. The next phase will create the ERPNext POS Invoice and accept payment."
-			),
+			message: __("Order prepared by {0}. The next phase will create the ERPNext POS Invoice and accept payment.", [this.cashier.employee_name]),
 			indicator: "green",
 		});
 	}

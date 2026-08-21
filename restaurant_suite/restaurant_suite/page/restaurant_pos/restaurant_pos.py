@@ -1,4 +1,5 @@
 import frappe
+from werkzeug.security import check_password_hash
 
 CATALOG = [
 	{
@@ -280,6 +281,33 @@ CATALOG = [
 		],
 	},
 ]
+
+
+@frappe.whitelist()
+def authenticate_cashier(pin: str):
+	frappe.only_for(("System Manager", "Sales Manager", "Sales User", "HR Manager", "HR User"))
+	pin = str(pin or "").strip()
+	if not pin.isdigit() or not 4 <= len(pin) <= 8:
+		frappe.throw(frappe._("Invalid PIN."))
+
+	credentials = frappe.get_all(
+		"Restaurant Employee PIN",
+		filters={"enabled": 1},
+		fields=["employee", "employee_name", "pin_hash"],
+	)
+	credential = next(
+		(row for row in credentials if row.pin_hash and check_password_hash(row.pin_hash, pin)),
+		None,
+	)
+	if not credential:
+		frappe.throw(frappe._("Invalid PIN."))
+
+	employee = frappe.db.get_value(
+		"Employee", credential.employee, ["name", "employee_name", "status"], as_dict=True
+	)
+	if not employee or employee.status != "Active":
+		frappe.throw(frappe._("This employee is not active."))
+	return {"employee": employee.name, "employee_name": employee.employee_name}
 
 
 @frappe.whitelist()
