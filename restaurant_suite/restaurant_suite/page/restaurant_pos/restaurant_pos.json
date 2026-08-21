@@ -14,6 +14,18 @@
  "roles": [
   {
    "role": "System Manager"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
   }
  ],
  "script": null,
@@ -22,4 +34,3 @@
  "system_page": 0,
  "title": "Restaurant POS"
 }
-
