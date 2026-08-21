@@ -21,6 +21,7 @@ class RestaurantTimeClock {
 					<div class="clock-keypad"></div>
 					<button class="clock-submit btn btn-primary btn-lg">${__("Continue")}</button>
 					<div class="clock-result"></div>
+					<button class="clock-open-pos btn btn-success btn-lg">${__("Open POS")}</button>
 				</div>
 			</div>`
 		);
@@ -30,6 +31,7 @@ class RestaurantTimeClock {
 			$("<button type='button'>").text(__(key)).on("click", () => this.press(key)).appendTo($pad)
 		);
 		this.page.main.find(".clock-submit").on("click", () => this.submit());
+		this.page.main.find(".clock-open-pos").on("click", () => frappe.set_route("restaurant-pos"));
 	}
 
 	add_styles() {
@@ -41,6 +43,7 @@ class RestaurantTimeClock {
 			.clock-pin{width:100%;height:58px;text-align:center;font-size:32px;letter-spacing:12px;border:2px solid #dccbd3;border-radius:12px;margin:12px 0 18px}
 			.clock-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.clock-keypad button{min-height:58px;border:1px solid #dfd0d6;border-radius:12px;background:#fff8fb;font-size:21px;font-weight:700;color:#3d2530}
 			.clock-submit{width:100%;margin-top:16px;min-height:52px}.clock-result{margin-top:18px;font-size:18px;font-weight:700}
+			.clock-open-pos{display:none;width:100%;margin-top:16px;min-height:52px;font-size:18px;font-weight:700}
 		`).appendTo("head");
 	}
 
@@ -62,6 +65,7 @@ class RestaurantTimeClock {
 			const row = response.message;
 			const action = row.log_type === "IN" ? __("CLOCKED IN") : __("CLOCKED OUT");
 			this.page.main.find(".clock-result").css("color", row.log_type === "IN" ? "#22863a" : "#9c6500").text(`${row.employee_name} — ${action}`);
+			this.page.main.find(".clock-open-pos").show().trigger("focus");
 		} finally {
 			this.pin = "";
 			this.page.main.find(".clock-pin").val("");
