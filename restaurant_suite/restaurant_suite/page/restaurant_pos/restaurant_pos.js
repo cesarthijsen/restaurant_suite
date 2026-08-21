@@ -97,9 +97,10 @@ class RestaurantPOS {
 				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__(
 			"Ice cream, pastry, drinks & coffee"
 		)}</div></div>
-				<button class="btn btn-default pos-clear">${__("Clear Order")}</button>
+				<div class="pos-brand-actions"><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button></div>
 			</div>
 		`);
+		this.$root.find(".pos-clock").on("click", () => frappe.set_route("restaurant-time-clock"));
 		this.$root.find(".pos-clear").on("click", () => this.clear_order());
 		const $layout = $("<div class='pos-layout'>").appendTo(this.$root);
 		const $shop = $("<section class='pos-shop'>").appendTo($layout);
