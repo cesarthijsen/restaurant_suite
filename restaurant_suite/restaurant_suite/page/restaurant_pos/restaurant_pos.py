@@ -47,6 +47,18 @@ CATALOG = [
 		],
 	},
 	{
+		"name": "Ice Cream Bars",
+		"icon": "🍫",
+		"products": [
+			{"code": "BAR-CARAMEL-BROWNIE", "name": "Caramel Brownie Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍫"},
+			{"code": "BAR-CARAMEL-ALMOND", "name": "Caramel Almond Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍫"},
+			{"code": "BAR-CHOCOLATE-ALMOND", "name": "Chocolate Almond Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍫"},
+			{"code": "BAR-MACADAMIA-NUT", "name": "Macadamia Nut Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍫"},
+			{"code": "BAR-SALTED-CARAMEL", "name": "Salted Caramel Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍫"},
+			{"code": "BAR-STRAWBERRY-CREAM", "name": "Strawberry & Cream Bar", "price_awg": 10.50, "price_usd": 6.00, "icon": "🍓"},
+		],
+	},
+	{
 		"name": "Pastry",
 		"icon": "🧇",
 		"products": [
@@ -239,6 +251,22 @@ CATALOG = [
 				"price_awg": 5.25,
 				"price_usd": 3.00,
 				"icon": "🥤",
+				"demo_price": True,
+			},
+			{
+				"code": "ORANGE-JUICE",
+				"name": "Orange Juice",
+				"price_awg": 7.00,
+				"price_usd": 4.00,
+				"icon": "🧃",
+				"demo_price": True,
+			},
+			{
+				"code": "APPLE-JUICE",
+				"name": "Apple Juice",
+				"price_awg": 7.00,
+				"price_usd": 4.00,
+				"icon": "🧃",
 				"demo_price": True,
 			},
 			{
