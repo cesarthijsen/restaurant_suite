@@ -7,17 +7,31 @@ frappe.pages["restaurant-pos"].on_page_load = function (wrapper) {
 	new RestaurantPOS(wrapper);
 };
 
+frappe.pages["restaurant-pos"].on_page_show = function () {
+	document.body.classList.add("restaurant-pos-kiosk");
+};
+
+frappe.pages["restaurant-pos"].on_page_hide = function () {
+	document.body.classList.remove("restaurant-pos-kiosk");
+};
+
 class RestaurantPOS {
 	constructor(wrapper) {
 		this.page = wrapper.page;
 		this.cart = [];
-		this.cashier = null;
+		this.cashier = this.restore_demo_cashier();
 		this.cashier_pin = "";
+		this.demo_mode = new URLSearchParams(window.location.search).get("mode") !== "live";
+		this.demo_orders_key = "restaurant_suite_demo_orders_v1";
+		this.catalog_cache_key = "restaurant_suite_pos_data_v1";
+		this.online = navigator.onLine;
+		this.install_prompt = null;
 		this.active_category = 0;
 		this.customizing = null;
 		this.selections = {};
 		this.current_step = 0;
 		this.add_styles();
+		this.setup_pwa();
 		this.load();
 	}
 
@@ -28,12 +42,66 @@ class RestaurantPOS {
 				method: "restaurant_suite.restaurant_suite.page.restaurant_pos.restaurant_pos.get_pos_data",
 			});
 			this.data = response.message;
+			localStorage.setItem(this.catalog_cache_key, JSON.stringify(this.data));
+			this.online = true;
 			this.page.set_indicator(__("Ready"), "green");
-			this.$root = $("<div class='restaurant-pos'>").appendTo(this.page.main.empty());
-			this.render();
 		} catch (error) {
-			this.page.set_indicator(__("Error"), "red");
-			frappe.msgprint(__("Restaurant POS could not load."));
+			const cached = localStorage.getItem(this.catalog_cache_key);
+			if (!cached) {
+				this.page.set_indicator(__("Error"), "red");
+				frappe.msgprint(__("Restaurant POS could not load. Connect once to download the demo menu."));
+				return;
+			}
+			this.data = JSON.parse(cached);
+			this.online = false;
+			this.page.set_indicator(__("Offline Demo"), "orange");
+			frappe.show_alert({ message: __("Offline demo menu loaded"), indicator: "orange" });
+		}
+		this.$root = $("<div class='restaurant-pos'>").appendTo(this.page.main.empty());
+		this.render();
+	}
+
+	setup_pwa() {
+		document.body.classList.add("restaurant-pos-kiosk");
+		if (!document.querySelector("link[rel='manifest'][data-restaurant-pos]")) {
+			$("<link>", {
+				rel: "manifest",
+				href: "/assets/restaurant_suite/pwa/manifest.json",
+				"data-restaurant-pos": "1",
+			}).appendTo("head");
+		}
+		if (!document.querySelector("meta[name='theme-color'][data-restaurant-pos]")) {
+			$("<meta>", {
+				name: "theme-color",
+				content: "#72002b",
+				"data-restaurant-pos": "1",
+			}).appendTo("head");
+		}
+		if ("serviceWorker" in navigator) {
+			navigator.serviceWorker.register("/restaurant-pos-sw.js", { scope: "/desk/" }).catch(() => {
+				// The deployment guide adds the root service-worker route in Nginx.
+			});
+		}
+		window.addEventListener("online", () => {
+			this.online = true;
+			if (this.$root) this.render();
+		});
+		window.addEventListener("offline", () => {
+			this.online = false;
+			if (this.$root) this.render();
+		});
+		window.addEventListener("beforeinstallprompt", (event) => {
+			event.preventDefault();
+			this.install_prompt = event;
+			if (this.$root) this.render();
+		});
+	}
+
+	restore_demo_cashier() {
+		try {
+			return JSON.parse(sessionStorage.getItem("restaurant_suite_demo_cashier") || "null");
+		} catch (error) {
+			return null;
 		}
 	}
 
@@ -89,6 +157,12 @@ class RestaurantPOS {
 			.pos-login-card { width:min(420px,100%); background:white; border:1px solid #eadfd5; border-radius:20px; padding:28px; text-align:center; box-shadow:0 10px 30px rgba(64,25,30,.1); }
 			.pos-login-card h2 { color:var(--wine); font-weight:800; }.pos-login-pin { width:100%; height:58px; text-align:center; font-size:30px; letter-spacing:12px; border:2px solid #dccbd3; border-radius:12px; margin:12px 0 18px; }
 			.pos-login-keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }.pos-login-keypad button { min-height:56px; border:1px solid #dfd0d6; border-radius:12px; background:#fff8fb; font-size:20px; font-weight:700; }.pos-login-submit { width:100%; min-height:50px; margin-top:14px; }.pos-cashier { color:#72002b; font-weight:700; }
+			.pos-pwa-status { display:flex; flex-wrap:wrap; gap:7px; margin-top:7px; }
+			.pos-status-pill { display:inline-flex; align-items:center; gap:5px; border-radius:999px; padding:5px 9px; font-size:12px; font-weight:800; }
+			.pos-status-pill.demo { background:#f7d9e5; color:#72002b; }.pos-status-pill.online { background:#d1e7dd; color:#0f5132; }.pos-status-pill.offline { background:#fff3cd; color:#664d03; }.pos-status-pill.pending { background:#e2e3e5; color:#41464b; }
+			body.restaurant-pos-kiosk .desk-sidebar, body.restaurant-pos-kiosk .layout-side-section { display:none!important; }
+			body.restaurant-pos-kiosk .layout-main-section-wrapper, body.restaurant-pos-kiosk .layout-main-section { max-width:none!important; width:100%!important; }
+			@media(display-mode:standalone){body.restaurant-pos-kiosk .navbar{display:none!important}.restaurant-pos{padding-top:8px}}
 			@media(max-width:900px){.pos-layout{grid-template-columns:1fr}.pos-cart{min-height:420px}}
 			@media(max-width:560px){.restaurant-pos{padding:7px}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:180px}.pos-product-art{height:90px}}
 		`
@@ -104,13 +178,15 @@ class RestaurantPOS {
 		}
 		this.$root.append(`
 			<div class="pos-brand">
-				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__("Ice cream, pastry, drinks & coffee")}</div><div class="pos-cashier">${__("Cashier")}: ${frappe.utils.escape_html(this.cashier.employee_name)}</div></div>
-				<div class="pos-brand-actions"><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-lock">${__("Lock POS")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button></div>
+				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__("Ice cream, pastry, drinks & coffee")}</div><div class="pos-cashier">${__("Cashier")}: ${frappe.utils.escape_html(this.cashier.employee_name)}</div><div class="pos-pwa-status"><span class="pos-status-pill demo">🧪 ${__("Demo Mode")}</span><span class="pos-status-pill ${this.online ? "online" : "offline"}">${this.online ? "● " + __("Online") : "● " + __("Offline")}</span><span class="pos-status-pill pending">💾 ${__("{0} saved demo order(s)", [this.get_demo_orders().length])}</span></div></div>
+				<div class="pos-brand-actions"><button class="btn btn-default pos-install">${__("Install App")}</button><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-lock">${__("Lock POS")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button><button class="btn btn-default pos-reset">${__("Reset Demo")}</button></div>
 			</div>
 		`);
+		this.$root.find(".pos-install").on("click", () => this.install_app());
 		this.$root.find(".pos-clock").on("click", () => frappe.set_route("restaurant-time-clock"));
 		this.$root.find(".pos-lock").on("click", () => this.lock_pos());
 		this.$root.find(".pos-clear").on("click", () => this.clear_order());
+		this.$root.find(".pos-reset").on("click", () => this.reset_demo());
 		const $layout = $("<div class='pos-layout'>").appendTo(this.$root);
 		const $shop = $("<section class='pos-shop'>").appendTo($layout);
 		if (this.customizing) this.render_customizer($shop);
@@ -138,6 +214,7 @@ class RestaurantPOS {
 		try {
 			const response = await frappe.call({ method: "restaurant_suite.restaurant_suite.page.restaurant_pos.restaurant_pos.authenticate_cashier", args: { pin: this.cashier_pin } });
 			this.cashier = response.message;
+			sessionStorage.setItem("restaurant_suite_demo_cashier", JSON.stringify(this.cashier));
 			this.cashier_pin = "";
 			frappe.show_alert({ message: __("Welcome, {0}", [this.cashier.employee_name]), indicator: "green" });
 			this.render();
@@ -145,7 +222,7 @@ class RestaurantPOS {
 	}
 
 	lock_pos() {
-		const lock = () => { this.cart = []; this.cashier = null; this.cashier_pin = ""; this.customizing = null; this.render(); };
+		const lock = () => { this.cart = []; this.cashier = null; this.cashier_pin = ""; this.customizing = null; sessionStorage.removeItem("restaurant_suite_demo_cashier"); this.render(); };
 		if (this.cart.length) frappe.confirm(__("Lock the POS and clear the current order?"), lock);
 		else lock();
 	}
@@ -396,10 +473,99 @@ class RestaurantPOS {
 	}
 
 	complete_order() {
+		if (!this.cart.length) return;
+		const dialog = new frappe.ui.Dialog({
+			title: __("Complete Demo Order"),
+			fields: [
+				{
+					fieldname: "payment_method",
+					fieldtype: "Select",
+					label: __("Payment Method"),
+					options: ["Cash", "ATM / Card"],
+					default: "Cash",
+					reqd: 1,
+				},
+				{
+					fieldname: "notice",
+					fieldtype: "HTML",
+					options: '<div class="alert alert-warning">' + __("Demo only — no ERPNext invoice, stock movement, loyalty transaction, or bank charge will be created.") + "</div>",
+				},
+			],
+			primary_action_label: __("Save Demo Order"),
+			primary_action: (values) => {
+				if (!this.online && values.payment_method === "ATM / Card") {
+					frappe.show_alert({ message: __("ATM / Card is unavailable while offline."), indicator: "red" });
+					return;
+				}
+				this.save_demo_order(values.payment_method);
+				dialog.hide();
+			},
+		});
+		dialog.show();
+	}
+
+	save_demo_order(payment_method) {
+		const totals = this.totals();
+		const order = {
+			id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `demo-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+			created_at: new Date().toISOString(),
+			cashier: { employee: this.cashier.employee, employee_name: this.cashier.employee_name },
+			items: this.cart.map((item) => ({
+				code: item.code,
+				name: item.name,
+				quantity: item.quantity,
+				price_awg: item.price_awg,
+				price_usd: item.price_usd,
+				modifiers: item.modifiers,
+			})),
+			totals,
+			payment_method,
+			created_offline: !this.online,
+			status: "demo-only",
+		};
+		const orders = this.get_demo_orders();
+		orders.push(order);
+		localStorage.setItem(this.demo_orders_key, JSON.stringify(orders));
+		this.cart = [];
+		this.customizing = null;
+		this.render();
 		frappe.msgprint({
-			title: __("Demo Order Ready"),
-			message: __("Order prepared by {0}. The next phase will create the ERPNext POS Invoice and accept payment.", [this.cashier.employee_name]),
+			title: __("Demo Order Saved"),
+			message: __("Order {0} was saved on this tablet. It did not create a real invoice or charge.", [order.id.slice(0, 12)]),
 			indicator: "green",
+		});
+	}
+
+	get_demo_orders() {
+		try {
+			const orders = JSON.parse(localStorage.getItem(this.demo_orders_key) || "[]");
+			return Array.isArray(orders) ? orders : [];
+		} catch (error) {
+			return [];
+		}
+	}
+
+	reset_demo() {
+		frappe.confirm(__("Delete all locally saved demo orders and clear the current cart?"), () => {
+			localStorage.removeItem(this.demo_orders_key);
+			this.cart = [];
+			this.customizing = null;
+			this.render();
+			frappe.show_alert({ message: __("Demo data reset"), indicator: "green" });
+		});
+	}
+
+	async install_app() {
+		if (this.install_prompt) {
+			this.install_prompt.prompt();
+			await this.install_prompt.userChoice;
+			this.install_prompt = null;
+			return;
+		}
+		frappe.msgprint({
+			title: __("Install on Tablet"),
+			message: __("On iPad: open this page in Safari, tap Share, then choose Add to Home Screen. On Android or desktop Chrome: use Install App from the browser menu."),
+			indicator: "blue",
 		});
 	}
 
