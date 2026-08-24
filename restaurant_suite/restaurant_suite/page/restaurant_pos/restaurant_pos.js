@@ -110,11 +110,11 @@ class RestaurantPOS {
 		$("<style id='restaurant-pos-styles'>")
 			.text(
 				`
-			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; max-width:1440px; margin:0 auto; padding:18px; }
-			.pos-brand { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
+			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; width:100%; max-width:none; height:100dvh; margin:0; padding:8px; display:flex; flex-direction:column; overflow:hidden; }
+			.pos-brand { display:flex; flex:0 0 auto; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
 			.pos-brand h2 { color:var(--wine); font-size:28px; font-weight:800; margin:0; }
-			.pos-layout { display:grid; grid-template-columns:minmax(0,2fr) minmax(330px,1fr); gap:18px; }
-			.pos-shop,.pos-cart { background:var(--cream); border:1px solid #eadfd5; border-radius:18px; padding:18px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
+			.pos-layout { display:grid; flex:1 1 auto; min-height:0; grid-template-columns:minmax(0,2fr) minmax(310px,1fr); gap:10px; }
+			.pos-shop,.pos-cart { min-height:0; overflow:auto; background:var(--cream); border:1px solid #eadfd5; border-radius:16px; padding:12px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
 			.pos-categories { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
 			.pos-category { border:1px solid #e4d6cf; background:white; color:#3d2530; border-radius:14px; padding:13px 18px; font-size:15px; font-weight:700; white-space:nowrap; }
 			.pos-category.active { background:var(--wine); border-color:var(--wine); color:white; }
@@ -127,7 +127,7 @@ class RestaurantPOS {
 			.pos-price { color:var(--wine); font-weight:800; margin-top:8px; }
 			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
 			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
-			.pos-cart { background:white; display:flex; flex-direction:column; min-height:620px; }
+			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; }
 			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
 			.pos-cart-title h3 { margin:0; color:#2f1e27; }
 			.pos-cart-items { flex:1; }
@@ -160,11 +160,13 @@ class RestaurantPOS {
 			.pos-pwa-status { display:flex; flex-wrap:wrap; gap:7px; margin-top:7px; }
 			.pos-status-pill { display:inline-flex; align-items:center; gap:5px; border-radius:999px; padding:5px 9px; font-size:12px; font-weight:800; }
 			.pos-status-pill.demo { background:#f7d9e5; color:#72002b; }.pos-status-pill.online { background:#d1e7dd; color:#0f5132; }.pos-status-pill.offline { background:#fff3cd; color:#664d03; }.pos-status-pill.pending { background:#e2e3e5; color:#41464b; }
-			body.restaurant-pos-kiosk .desk-sidebar, body.restaurant-pos-kiosk .layout-side-section { display:none!important; }
-			body.restaurant-pos-kiosk .layout-main-section-wrapper, body.restaurant-pos-kiosk .layout-main-section { max-width:none!important; width:100%!important; }
-			@media(display-mode:standalone){body.restaurant-pos-kiosk .navbar{display:none!important}.restaurant-pos{padding-top:8px}}
-			@media(max-width:900px){.pos-layout{grid-template-columns:1fr}.pos-cart{min-height:420px}}
-			@media(max-width:560px){.restaurant-pos{padding:7px}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:180px}.pos-product-art{height:90px}}
+			body.restaurant-pos-kiosk .desk-sidebar, body.restaurant-pos-kiosk .layout-side-section, body.restaurant-pos-kiosk .page-head { display:none!important; }
+			body.restaurant-pos-kiosk .page-container, body.restaurant-pos-kiosk .container, body.restaurant-pos-kiosk .layout-main-section-wrapper, body.restaurant-pos-kiosk .layout-main-section { max-width:none!important; width:100%!important; margin:0!important; padding:0!important; }
+			body.restaurant-pos-kiosk .page-body, body.restaurant-pos-kiosk .main-section { margin:0!important; padding:0!important; }
+			@media(display-mode:standalone){body.restaurant-pos-kiosk .navbar{display:none!important}.restaurant-pos{padding-top:max(6px,env(safe-area-inset-top));padding-right:max(6px,env(safe-area-inset-right));padding-bottom:max(6px,env(safe-area-inset-bottom));padding-left:max(6px,env(safe-area-inset-left))}}
+			@media(max-height:760px){.pos-brand h2{font-size:22px}.pos-product{min-height:166px}.pos-product-art{height:78px;font-size:42px}.pos-product-info{padding:9px}.pos-category{padding:9px 13px}.pos-cart-row{padding:9px 0}}
+			@media(max-width:700px){.restaurant-pos{height:auto;min-height:100dvh;overflow:visible}.pos-layout{grid-template-columns:1fr}.pos-shop,.pos-cart{overflow:visible}.pos-cart{min-height:420px}}
+			@media(max-width:560px){.restaurant-pos{padding:5px}.pos-brand{align-items:flex-start;flex-direction:column}.pos-brand-actions{display:flex;flex-wrap:wrap}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:170px}.pos-product-art{height:82px}}
 		`
 			)
 			.appendTo("head");
