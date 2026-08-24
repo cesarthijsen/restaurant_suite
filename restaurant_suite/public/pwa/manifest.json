@@ -1,0 +1,25 @@
+{
+  "name": "Restaurant POS Demo",
+  "short_name": "Restaurant POS",
+  "description": "Installable offline-capable restaurant POS demonstration",
+  "id": "/desk/restaurant-pos?mode=demo",
+  "start_url": "/desk/restaurant-pos?mode=demo",
+  "scope": "/desk/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#fff8ef",
+  "theme_color": "#72002b",
+  "categories": [
+    "business",
+    "food",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/assets/restaurant_suite/pwa/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
