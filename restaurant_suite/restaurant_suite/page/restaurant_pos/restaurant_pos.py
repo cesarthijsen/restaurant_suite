@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import frappe
 from werkzeug.security import check_password_hash
 
@@ -326,7 +328,7 @@ def get_pos_data(flow_name: str = "Ice Cream POS"):
 		options = frappe.get_all(
 			"Restaurant Modifier Option",
 			filters={"modifier_group": group.name, "enabled": 1},
-			fields=["name", "option_name", "description", "price_adjustment", "sequence"],
+			fields=["name", "option_name", "description", "item_code", "image", "price_adjustment", "sequence"],
 			order_by="sequence asc, option_name asc",
 		)
 		steps.append(
@@ -341,8 +343,24 @@ def get_pos_data(flow_name: str = "Ice Cream POS"):
 			}
 		)
 
+	catalog = deepcopy(CATALOG)
+	item_codes = [product["code"] for category in catalog for product in category["products"]]
+	item_images = {
+		row.item_code: row.image
+		for row in frappe.get_all("Item", filters={"item_code": ["in", item_codes]}, fields=["item_code", "image"])
+		if row.image
+	}
+	for category in catalog:
+		for product in category["products"]:
+			product["image"] = item_images.get(product["code"])
+
+	for step in steps:
+		for option in step["options"]:
+			if not option.image and option.item_code:
+				option.image = frappe.db.get_value("Item", option.item_code, "image")
+
 	return {
-		"catalog": CATALOG,
+		"catalog": catalog,
 		"flow": {"flow_name": flow.flow_name, "steps": steps},
 		"currencies": {"primary": "AWG", "secondary": "USD"},
 	}

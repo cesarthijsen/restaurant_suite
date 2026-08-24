@@ -123,15 +123,21 @@ class RestaurantPOS {
 			.pos-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:10px; align-content:start; }
 			.pos-product { position:relative; border:1px solid #e6dbd5; background:white; border-radius:15px; padding:0; overflow:hidden; text-align:left; min-height:178px; transition:.14s ease; box-shadow:0 3px 10px rgba(64,25,30,.035); }
 			.pos-product:hover { transform:translateY(-2px); border-color:var(--wine); box-shadow:0 9px 22px rgba(114,0,43,.12); }
-			.pos-product-art { height:88px; display:grid; place-items:center; font-size:46px; background:linear-gradient(145deg,#fffdfb,#f5e6df); }
+			.pos-product-art { height:88px; display:grid; place-items:center; font-size:46px; background:#fffaf7; overflow:hidden; }
+			.pos-product-art img { width:100%; height:100%; object-fit:cover; }
+			.pos-scoop-visual { display:flex; align-items:flex-end; justify-content:center; gap:3px; height:62px; }
+			.pos-scoop { width:38px; height:38px; border-radius:50%; background:var(--scoop,#e5b77f); border:2px solid rgba(76,0,29,.12); box-shadow:inset -5px -6px 0 rgba(76,0,29,.08); }
+			.pos-scoop:nth-child(2){--scoop:#f2d7a0}.pos-scoop:nth-child(3){--scoop:#c98d73}
+			.pos-scoop-cup { width:62px; height:25px; margin:-5px auto 0; background:#fff; border:2px solid #d9c9c1; border-radius:3px 3px 20px 20px; }
 			.pos-product-info { padding:10px 11px 11px; }
 			.pos-product strong { display:block; color:#2f1e27; font-size:14px; line-height:1.25; min-height:35px; }
 			.pos-price { color:var(--wine); font-size:15px; font-weight:850; margin-top:5px; }
 			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
 			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
 			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; overflow:hidden; border-top:5px solid var(--wine); }
-			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
-			.pos-cart-title h3 { margin:0; color:#2f1e27; font-size:19px; font-weight:850; }
+			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; margin:-12px -12px 0; padding:12px 14px; background:var(--wine); color:white; border-radius:13px 13px 0 0; }
+			.pos-cart-title .text-muted { color:rgba(255,255,255,.85)!important; }
+			.pos-cart-title h3 { margin:0; color:white; font-size:19px; font-weight:850; }
 			.pos-cart-items { flex:1 1 auto; min-height:0; overflow:auto; }
 			.pos-cart-row { display:grid; grid-template-columns:1fr auto; gap:10px; padding:14px 0; border-bottom:1px solid #eee5df; }
 			.pos-cart-row strong { display:block; }
@@ -147,16 +153,25 @@ class RestaurantPOS {
 			.pos-complete { flex:0 0 auto; width:100%; min-height:56px; border:0; border-radius:14px; padding:12px; margin-top:8px; background:var(--wine); color:white; font-size:17px; font-weight:850; box-shadow:0 7px 18px rgba(114,0,43,.22); }
 			.pos-complete:hover:not(:disabled) { background:var(--wine-dark); }
 			.pos-complete:disabled { background:#d8ccc7; color:#817079; opacity:1; box-shadow:none; }
-			.pos-progress { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; }
+			.pos-progress { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; overflow-x:auto; margin-bottom:12px; }
 			.pos-progress button { min-height:42px; border:1px solid #dfd2cc; border-radius:999px; padding:10px 16px; white-space:nowrap; background:#fff; color:#5f4b54; font-weight:750; }
+			.pos-progress button:nth-child(1){background:#fff0c7;border-color:#f2cb72;color:#8a5200}.pos-progress button:nth-child(2){background:#ffe0d9;border-color:#f3a491;color:#9a3528}.pos-progress button:nth-child(3){background:#f8dce6;border-color:#d983a4;color:#72002b}.pos-progress button:nth-child(4){background:#e3f0dd;border-color:#9fc88d;color:#256b39}
 			.pos-progress button.active { background:var(--wine); border-color:var(--wine); color:white; box-shadow:0 5px 14px rgba(114,0,43,.18); }
-			.pos-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:18px 0; }
-			.pos-option { min-height:96px; border:2px solid #e3d7d1; border-radius:14px; background:white; padding:14px; text-align:left; color:#2f1e27; box-shadow:0 3px 10px rgba(64,25,30,.035); }
+			.pos-customizer-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:6px 0 10px; }
+			.pos-customizer-head h4 { margin:0; }
+			.pos-selection-count { border-radius:999px; padding:6px 11px; background:#f4e1e8; color:var(--wine); font-weight:800; white-space:nowrap; }
+			.pos-option-search { width:100%; min-height:44px; border:1px solid #dfd2cc; border-radius:12px; padding:8px 13px; margin-bottom:10px; background:white; }
+			.pos-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:10px; margin:8px 0; }
+			.pos-option { position:relative; min-height:88px; border:2px solid color-mix(in srgb,var(--flavor) 28%,#e3d7d1); border-left:6px solid var(--flavor,#d8c9c3); border-radius:14px; background:color-mix(in srgb,var(--flavor) 9%,white); padding:10px; text-align:left; color:#2f1e27; box-shadow:0 3px 10px rgba(64,25,30,.035); }
+			.pos-option-visual { float:left; width:42px; height:42px; margin-right:9px; display:grid; place-items:center; border-radius:50%; background:var(--flavor,#eadfd5); font-size:23px; overflow:hidden; box-shadow:inset -4px -5px 0 rgba(64,25,30,.08); }
+			.pos-option-visual img { width:100%; height:100%; object-fit:cover; }
+			.pos-option-check { display:none; position:absolute; top:6px; right:7px; width:23px; height:23px; place-items:center; border-radius:50%; background:var(--wine); color:white; font-weight:900; }
 			.pos-option.selected { border-color:var(--wine); background:#f9e2ea; color:var(--wine-dark); box-shadow:inset 0 0 0 1px var(--wine),0 5px 14px rgba(114,0,43,.1); }
+			.pos-option.selected .pos-option-check { display:grid; }
 			.pos-option strong,.pos-option small { display:block; }
 			.pos-option small { color:#7f6d74; margin-top:6px; }
 			.pos-actions { position:sticky; bottom:-12px; z-index:3; display:grid; grid-template-columns:minmax(120px,.45fr) minmax(220px,1fr); gap:12px; margin:20px -12px -12px; padding:14px 12px max(14px,env(safe-area-inset-bottom)); background:rgba(255,248,239,.96); border-top:1px solid #e5d9d3; backdrop-filter:blur(10px); }
-			.pos-actions .btn { min-height:58px; border-radius:14px; font-size:17px; font-weight:850; }
+			.pos-actions .btn { min-height:48px; border-radius:12px; font-size:16px; font-weight:850; }
 			.pos-actions .btn-default { background:white; border:2px solid #d8c9c3; color:#5c4650; }
 			.pos-actions .btn-primary { background:var(--wine)!important; border-color:var(--wine)!important; color:white!important; box-shadow:0 8px 20px rgba(114,0,43,.24); }
 			.pos-actions .btn-primary:active { background:var(--wine-dark)!important; transform:translateY(1px); }
@@ -253,7 +268,7 @@ class RestaurantPOS {
 		const $grid = $("<div class='pos-products'>").appendTo($container);
 		category.products.forEach((product) => {
 			const $card = $("<button type='button' class='pos-product'>");
-			$card.append($("<div class='pos-product-art'>").text(product.icon));
+			$card.append($("<div class='pos-product-art'>").html(this.product_visual(product)));
 			const $info = $("<div class='pos-product-info'>").appendTo($card);
 			$info.append($("<strong>").text(product.name));
 			$info.append(
@@ -297,11 +312,25 @@ class RestaurantPOS {
 			$button.appendTo($progress);
 		});
 
-		$container.append(`<h4>${frappe.utils.escape_html(step.step_name)}</h4>`);
-		const $options = $("<div class='pos-options'>").appendTo($container);
 		const selected = this.selections[step.step_name] || [];
+		const limit = this.get_limit(step);
+		const instruction = limit ? __("Choose up to {0}", [limit]) : __("Choose an option");
+		$container.append(`<div class="pos-customizer-head"><h4>${frappe.utils.escape_html(step.step_name)} · <span class="text-muted">${instruction}</span></h4><span class="pos-selection-count">${selected.length}${limit ? " / " + limit : ""} ${__("selected")}</span></div>`);
+		if (step.step_name === "Flavors") {
+			const $search = $(`<input class="pos-option-search" type="search" placeholder="${__("Search flavors")}">`).appendTo($container);
+			$search.on("input", function () {
+				const query = this.value.trim().toLowerCase();
+				$(this).siblings(".pos-options").find(".pos-option").each(function () {
+					$(this).toggle(!query || String($(this).data("search")).includes(query));
+				});
+			});
+		}
+		const $options = $("<div class='pos-options'>").appendTo($container);
 		step.options.forEach((option) => {
-			const $button = $("<button type='button' class='pos-option'>");
+			const color = this.flavor_color(option.option_name);
+			const $button = $("<button type='button' class='pos-option'>").css("--flavor", color).data("search", option.option_name.toLowerCase());
+			const visual = option.image ? `<img src="${frappe.utils.escape_html(option.image)}" alt="">` : "🍨";
+			$button.append(`<span class="pos-option-visual">${visual}</span><span class="pos-option-check">✓</span>`);
 			$button.append($("<strong>").text(option.option_name));
 			$button.append($("<small>").text(__("Included")));
 			$button.toggleClass("selected", selected.includes(option.name));
@@ -322,6 +351,32 @@ class RestaurantPOS {
 		)
 			.on("click", () => this.next_step())
 			.appendTo($actions);
+	}
+
+
+	product_visual(product) {
+		if (product.image) return `<img src="${frappe.utils.escape_html(product.image)}" alt="">`;
+		const match = String(product.scoop_option || product.name).match(/([123])\s*Scoop/i);
+		if (match) {
+			const scoops = Array.from({ length: Number(match[1]) }, () => '<span class="pos-scoop"></span>').join("");
+			return `<div><div class="pos-scoop-visual">${scoops}</div><div class="pos-scoop-cup"></div></div>`;
+		}
+		return frappe.utils.escape_html(product.icon || "🍨");
+	}
+
+	flavor_color(name) {
+		const value = String(name || "").toLowerCase();
+		const palette = [
+			[/strawberry|raspberry|berry|mochi/, "#ef7f9d"],
+			[/mango|lemon|sorbet/, "#f4c542"],
+			[/pistachio|mint/, "#9fcf73"],
+			[/chocolate|brownie|rocky|cocoa/, "#9a6248"],
+			[/coffee|tiramisu|praline|rum raisin/, "#bd9675"],
+			[/caramel|dulce|biscuit/, "#d99542"],
+			[/cookie|macadamia/, "#cbb69d"],
+			[/vanilla|cream/, "#eadab5"],
+		];
+		return (palette.find(([pattern]) => pattern.test(value)) || [null, "#d8b6c2"])[1];
 	}
 
 	toggle_option(step, option_name) {
