@@ -144,17 +144,22 @@ class RestaurantPOS {
 			.pos-totals { flex:0 0 auto; border-top:2px solid #eadfd5; margin-top:8px; padding-top:8px; }
 			.pos-total-line { display:flex; justify-content:space-between; padding:5px 0; }
 			.pos-total-line.final { color:var(--wine); font-size:24px; font-weight:850; }
-			.pos-complete { flex:0 0 auto; width:100%; min-height:54px; border:0; border-radius:14px; padding:12px; margin-top:8px; background:#18833b; color:white; font-size:17px; font-weight:850; box-shadow:0 7px 18px rgba(24,131,59,.2); }
-			.pos-complete:disabled { opacity:.45; }
+			.pos-complete { flex:0 0 auto; width:100%; min-height:56px; border:0; border-radius:14px; padding:12px; margin-top:8px; background:var(--wine); color:white; font-size:17px; font-weight:850; box-shadow:0 7px 18px rgba(114,0,43,.22); }
+			.pos-complete:hover:not(:disabled) { background:var(--wine-dark); }
+			.pos-complete:disabled { background:#d8ccc7; color:#817079; opacity:1; box-shadow:none; }
 			.pos-progress { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; }
-			.pos-progress button { border:0; border-radius:999px; padding:9px 13px; white-space:nowrap; background:#eadfd5; color:#6f5a63; }
-			.pos-progress button.active { background:var(--wine); color:white; }
+			.pos-progress button { min-height:42px; border:1px solid #dfd2cc; border-radius:999px; padding:10px 16px; white-space:nowrap; background:#fff; color:#5f4b54; font-weight:750; }
+			.pos-progress button.active { background:var(--wine); border-color:var(--wine); color:white; box-shadow:0 5px 14px rgba(114,0,43,.18); }
 			.pos-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:18px 0; }
-			.pos-option { min-height:88px; border:2px solid #eadfd5; border-radius:13px; background:white; padding:13px; text-align:left; }
-			.pos-option.selected { border-color:var(--wine); background:#fff0f4; }
+			.pos-option { min-height:96px; border:2px solid #e3d7d1; border-radius:14px; background:white; padding:14px; text-align:left; color:#2f1e27; box-shadow:0 3px 10px rgba(64,25,30,.035); }
+			.pos-option.selected { border-color:var(--wine); background:#f9e2ea; color:var(--wine-dark); box-shadow:inset 0 0 0 1px var(--wine),0 5px 14px rgba(114,0,43,.1); }
 			.pos-option strong,.pos-option small { display:block; }
 			.pos-option small { color:#7f6d74; margin-top:6px; }
-			.pos-actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
+			.pos-actions { position:sticky; bottom:-12px; z-index:3; display:grid; grid-template-columns:minmax(120px,.45fr) minmax(220px,1fr); gap:12px; margin:20px -12px -12px; padding:14px 12px max(14px,env(safe-area-inset-bottom)); background:rgba(255,248,239,.96); border-top:1px solid #e5d9d3; backdrop-filter:blur(10px); }
+			.pos-actions .btn { min-height:58px; border-radius:14px; font-size:17px; font-weight:850; }
+			.pos-actions .btn-default { background:white; border:2px solid #d8c9c3; color:#5c4650; }
+			.pos-actions .btn-primary { background:var(--wine)!important; border-color:var(--wine)!important; color:white!important; box-shadow:0 8px 20px rgba(114,0,43,.24); }
+			.pos-actions .btn-primary:active { background:var(--wine-dark)!important; transform:translateY(1px); }
 			.pos-login-wrap { min-height:65vh; display:grid; place-items:center; }
 			.pos-login-card { width:min(420px,100%); background:white; border:1px solid #eadfd5; border-radius:20px; padding:28px; text-align:center; box-shadow:0 10px 30px rgba(64,25,30,.1); }
 			.pos-login-card h2 { color:var(--wine); font-weight:800; }.pos-login-pin { width:100%; height:58px; text-align:center; font-size:30px; letter-spacing:12px; border:2px solid #dccbd3; border-radius:12px; margin:12px 0 18px; }
@@ -166,9 +171,9 @@ class RestaurantPOS {
 			body.restaurant-pos-kiosk .page-container, body.restaurant-pos-kiosk .container, body.restaurant-pos-kiosk .layout-main-section-wrapper, body.restaurant-pos-kiosk .layout-main-section { max-width:none!important; width:100%!important; margin:0!important; padding:0!important; }
 			body.restaurant-pos-kiosk .page-body, body.restaurant-pos-kiosk .main-section { margin:0!important; padding:0!important; }
 			@media(display-mode:standalone){body.restaurant-pos-kiosk .navbar{display:none!important}.restaurant-pos{padding-top:max(6px,env(safe-area-inset-top));padding-right:max(6px,env(safe-area-inset-right));padding-bottom:max(6px,env(safe-area-inset-bottom));padding-left:max(6px,env(safe-area-inset-left))}}
-			@media(max-height:760px){.pos-brand h2{font-size:22px}.pos-product{min-height:166px}.pos-product-art{height:78px;font-size:42px}.pos-product-info{padding:9px}.pos-category{padding:9px 13px}.pos-cart-row{padding:9px 0}}
+			@media(max-height:760px){.pos-brand h2{font-size:22px}.pos-product{min-height:166px}.pos-product-art{height:78px;font-size:42px}.pos-product-info{padding:9px}.pos-category{padding:9px 13px}.pos-cart-row{padding:9px 0}.pos-actions .btn{min-height:52px}}
 			@media(max-width:700px){.restaurant-pos{height:auto;min-height:100dvh;overflow:visible}.pos-layout{grid-template-columns:1fr}.pos-shop,.pos-cart{overflow:visible}.pos-cart{min-height:420px}}
-			@media(max-width:560px){.restaurant-pos{padding:5px}.pos-brand{align-items:flex-start;flex-direction:column}.pos-brand-actions{display:flex;flex-wrap:wrap}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:170px}.pos-product-art{height:82px}}
+			@media(max-width:560px){.restaurant-pos{padding:5px}.pos-brand{align-items:flex-start;flex-direction:column}.pos-brand-actions{display:flex;flex-wrap:wrap}.pos-products{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-product{min-height:170px}.pos-product-art{height:82px}.pos-actions{grid-template-columns:1fr 1.6fr}.pos-actions .btn{font-size:16px}}
 		`
 			)
 			.appendTo("head");
