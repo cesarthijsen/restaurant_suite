@@ -112,7 +112,9 @@ class RestaurantPOS {
 				`
 			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; width:100%; max-width:none; height:100dvh; margin:0; padding:8px; display:flex; flex-direction:column; overflow:hidden; }
 			.pos-brand { display:flex; flex:0 0 auto; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
-			.pos-brand h2 { color:var(--wine); font-size:28px; font-weight:800; margin:0; }
+			.pos-brand h2 { color:var(--wine); font-size:26px; font-weight:800; margin:0; }
+			.pos-brand-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; }
+			.pos-brand-actions .btn { margin:0!important; padding:6px 9px; font-size:12px; }
 			.pos-layout { display:grid; flex:1 1 auto; min-height:0; grid-template-columns:minmax(0,2fr) minmax(310px,1fr); gap:10px; }
 			.pos-shop,.pos-cart { min-height:0; overflow:auto; background:var(--cream); border:1px solid #eadfd5; border-radius:16px; padding:12px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
 			.pos-categories { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
@@ -127,10 +129,10 @@ class RestaurantPOS {
 			.pos-price { color:var(--wine); font-weight:800; margin-top:8px; }
 			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
 			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
-			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; }
+			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
 			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
 			.pos-cart-title h3 { margin:0; color:#2f1e27; }
-			.pos-cart-items { flex:1; }
+			.pos-cart-items { flex:1 1 auto; min-height:0; overflow:auto; }
 			.pos-cart-row { display:grid; grid-template-columns:1fr auto; gap:10px; padding:14px 0; border-bottom:1px solid #eee5df; }
 			.pos-cart-row strong { display:block; }
 			.pos-modifiers { color:#84737a; font-size:12px; margin-top:3px; }
@@ -139,10 +141,10 @@ class RestaurantPOS {
 			.pos-line-price { color:var(--wine); font-weight:800; text-align:right; }
 			.pos-remove { border:0; background:transparent; color:#d44; margin-top:8px; }
 			.pos-empty { color:#8a777e; text-align:center; padding:80px 15px; }
-			.pos-totals { border-top:2px solid #eadfd5; margin-top:12px; padding-top:12px; }
+			.pos-totals { flex:0 0 auto; border-top:2px solid #eadfd5; margin-top:8px; padding-top:8px; }
 			.pos-total-line { display:flex; justify-content:space-between; padding:5px 0; }
 			.pos-total-line.final { color:var(--wine); font-size:21px; font-weight:800; }
-			.pos-complete { width:100%; border:0; border-radius:13px; padding:15px; margin-top:12px; background:#2faa4b; color:white; font-size:17px; font-weight:800; }
+			.pos-complete { flex:0 0 auto; width:100%; border:0; border-radius:13px; padding:12px; margin-top:8px; background:#2faa4b; color:white; font-size:16px; font-weight:800; }
 			.pos-complete:disabled { opacity:.45; }
 			.pos-progress { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; }
 			.pos-progress button { border:0; border-radius:999px; padding:9px 13px; white-space:nowrap; background:#eadfd5; color:#6f5a63; }
