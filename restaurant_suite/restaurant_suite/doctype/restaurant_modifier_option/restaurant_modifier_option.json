@@ -10,6 +10,7 @@
   "modifier_group",
   "description",
   "item_code",
+  "image",
   "price_adjustment",
   "maximum_quantity",
   "enabled",
@@ -41,6 +42,11 @@
    "fieldname": "item_code",
    "fieldtype": "Data",
    "label": "Inventory Item Code"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "POS Image"
   },
   {
    "default": "0",
