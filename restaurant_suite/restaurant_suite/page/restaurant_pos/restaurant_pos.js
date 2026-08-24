@@ -124,7 +124,7 @@ class RestaurantPOS {
 			.pos-product { position:relative; border:1px solid #e6dbd5; background:white; border-radius:15px; padding:0; overflow:hidden; text-align:left; min-height:178px; transition:.14s ease; box-shadow:0 3px 10px rgba(64,25,30,.035); }
 			.pos-product:hover { transform:translateY(-2px); border-color:var(--wine); box-shadow:0 9px 22px rgba(114,0,43,.12); }
 			.pos-product-art { height:88px; display:grid; place-items:center; font-size:46px; background:#fffaf7; overflow:hidden; }
-			.pos-product-art img { width:100%; height:100%; object-fit:cover; }
+			.pos-product-art img { width:100%; height:100%; object-fit:contain; padding:4px; }
 			.pos-scoop-visual { display:flex; align-items:flex-end; justify-content:center; gap:3px; height:62px; }
 			.pos-scoop { width:38px; height:38px; border-radius:50%; background:var(--scoop,#e5b77f); border:2px solid rgba(76,0,29,.12); box-shadow:inset -5px -6px 0 rgba(76,0,29,.08); }
 			.pos-scoop:nth-child(2){--scoop:#f2d7a0}.pos-scoop:nth-child(3){--scoop:#c98d73}
@@ -329,7 +329,7 @@ class RestaurantPOS {
 		step.options.forEach((option) => {
 			const color = this.flavor_color(option.option_name);
 			const $button = $("<button type='button' class='pos-option'>").css("--flavor", color).data("search", option.option_name.toLowerCase());
-			const image = option.image || this.demo_flavor_image(option.option_name);
+			const image = option.image || this.demo_option_image(step.step_name, option.option_name);
 			const visual = image ? `<img src="${frappe.utils.escape_html(image)}" alt="">` : "🍨";
 			$button.append(`<span class="pos-option-visual">${visual}</span><span class="pos-option-check">✓</span>`);
 			$button.append($("<strong>").text(option.option_name));
@@ -362,7 +362,34 @@ class RestaurantPOS {
 			const scoops = Array.from({ length: Number(match[1]) }, () => '<span class="pos-scoop"></span>').join("");
 			return `<div><div class="pos-scoop-visual">${scoops}</div><div class="pos-scoop-cup"></div></div>`;
 		}
+		const demo = this.demo_product_image(product);
+		if (demo) return `<img src="${frappe.utils.escape_html(demo)}" alt="">`;
 		return frappe.utils.escape_html(product.icon || "🍨");
+	}
+
+	demo_product_image(product) {
+		const value = `${product.code || ""} ${product.name || ""}`.toLowerCase();
+		const base = "/assets/restaurant_suite/images/demo/products/";
+		const families = [
+			[/pint/, "pint.webp"], [/750|tub/, "tub-750.webp"],
+			[/ice.?cream.?bar|bar-/, "ice-cream-bar.webp"], [/banana.?split/, "banana-split.webp"],
+			[/waffle/, "waffle.webp"], [/crepe/, "crepe.webp"],
+			[/smoothie|sipper|mojito|pina|temptation/, "smoothie.webp"],
+			[/latte|coffee|mocha|affogato|americano|cappuccino|espresso|macchiato/, "coffee.webp"],
+			[/water|juice|soft.?drink/, "water-juice.webp"], [/cake|brownie|cookie/, "pastry.webp"],
+		];
+		const family = families.find(([pattern]) => pattern.test(value));
+		return family ? base + family[1] : null;
+	}
+
+	demo_option_image(step_name, option_name) {
+		if (step_name === "Flavors") return this.demo_flavor_image(option_name);
+		if (step_name !== "Serving Type") return null;
+		const value = String(option_name || "").toLowerCase();
+		const base = "/assets/restaurant_suite/images/demo/products/";
+		if (/decorated|chocolate|nut/.test(value)) return base + "decorated-cone.webp";
+		if (/cone/.test(value)) return base + "waffle-cone.webp";
+		return base + "serving-cup.webp";
 	}
 
 
