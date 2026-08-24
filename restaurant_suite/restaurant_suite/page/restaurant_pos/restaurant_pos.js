@@ -110,28 +110,28 @@ class RestaurantPOS {
 		$("<style id='restaurant-pos-styles'>")
 			.text(
 				`
-			.restaurant-pos { --wine:#72002b; --cream:#fff8ef; --coral:#ee5b5b; width:100%; max-width:none; height:100dvh; margin:0; padding:8px; display:flex; flex-direction:column; overflow:hidden; }
-			.pos-brand { display:flex; flex:0 0 auto; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
-			.pos-brand h2 { color:var(--wine); font-size:26px; font-weight:800; margin:0; }
+			.restaurant-pos { --wine:#72002b; --wine-dark:#4c001d; --cream:#fbf6f2; --paper:#fff; --ink:#24171d; --muted:#76666d; width:100%; max-width:none; height:100dvh; margin:0; padding:10px; display:flex; flex-direction:column; overflow:hidden; background:#f5f1ee; color:var(--ink); }
+			.pos-brand { display:flex; flex:0 0 auto; justify-content:space-between; align-items:center; gap:16px; margin-bottom:10px; padding:10px 14px; background:var(--paper); border:1px solid #e7ddd8; border-radius:16px; box-shadow:0 5px 18px rgba(64,25,30,.05); }
+			.pos-brand h2 { color:var(--wine); font-size:24px; line-height:1; font-weight:850; letter-spacing:-.4px; margin:0 0 4px; }
 			.pos-brand-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; }
-			.pos-brand-actions .btn { margin:0!important; padding:6px 9px; font-size:12px; }
-			.pos-layout { display:grid; flex:1 1 auto; min-height:0; grid-template-columns:minmax(0,2fr) minmax(310px,1fr); gap:10px; }
-			.pos-shop,.pos-cart { min-height:0; overflow:auto; background:var(--cream); border:1px solid #eadfd5; border-radius:16px; padding:12px; box-shadow:0 8px 24px rgba(64,25,30,.06); }
-			.pos-categories { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
-			.pos-category { border:1px solid #e4d6cf; background:white; color:#3d2530; border-radius:14px; padding:13px 18px; font-size:15px; font-weight:700; white-space:nowrap; }
-			.pos-category.active { background:var(--wine); border-color:var(--wine); color:white; }
-			.pos-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px; }
-			.pos-product { border:1px solid #eadfd5; background:white; border-radius:16px; padding:0; overflow:hidden; text-align:left; min-height:205px; transition:.16s ease; }
+			.pos-brand-actions .btn { margin:0!important; min-height:40px; padding:8px 12px; font-size:12px; font-weight:700; border-radius:11px; }
+			.pos-layout { display:grid; flex:1 1 auto; min-height:0; grid-template-columns:minmax(0,1.85fr) minmax(340px,.9fr); gap:10px; }
+			.pos-shop,.pos-cart { min-height:0; overflow:auto; background:var(--cream); border:1px solid #e7ddd8; border-radius:18px; padding:12px; box-shadow:0 8px 24px rgba(64,25,30,.05); scrollbar-width:thin; }
+			.pos-categories { position:sticky; top:-12px; z-index:2; display:flex; gap:8px; overflow-x:auto; padding:12px 2px 10px; margin:-12px 0 10px; background:linear-gradient(var(--cream) 82%,transparent); }
+			.pos-category { border:1px solid #e3d6d0; background:white; color:#3d2530; border-radius:12px; min-height:46px; padding:10px 16px; font-size:14px; font-weight:750; white-space:nowrap; box-shadow:0 2px 8px rgba(64,25,30,.04); }
+			.pos-category.active { background:var(--wine); border-color:var(--wine); color:white; box-shadow:0 5px 14px rgba(114,0,43,.2); }
+			.pos-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:10px; align-content:start; }
+			.pos-product { position:relative; border:1px solid #e6dbd5; background:white; border-radius:15px; padding:0; overflow:hidden; text-align:left; min-height:178px; transition:.14s ease; box-shadow:0 3px 10px rgba(64,25,30,.035); }
 			.pos-product:hover { transform:translateY(-2px); border-color:var(--wine); box-shadow:0 9px 22px rgba(114,0,43,.12); }
-			.pos-product-art { height:112px; display:grid; place-items:center; font-size:54px; background:linear-gradient(145deg,#fff,#f8e7df); }
-			.pos-product-info { padding:13px; }
-			.pos-product strong { display:block; color:#2f1e27; font-size:15px; min-height:38px; }
-			.pos-price { color:var(--wine); font-weight:800; margin-top:8px; }
+			.pos-product-art { height:88px; display:grid; place-items:center; font-size:46px; background:linear-gradient(145deg,#fffdfb,#f5e6df); }
+			.pos-product-info { padding:10px 11px 11px; }
+			.pos-product strong { display:block; color:#2f1e27; font-size:14px; line-height:1.25; min-height:35px; }
+			.pos-price { color:var(--wine); font-size:15px; font-weight:850; margin-top:5px; }
 			.pos-price small { color:#7a6870; font-weight:600; margin-left:5px; }
 			.pos-demo-price { display:block; color:#a36d00; font-size:11px; margin-top:3px; }
-			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+			.pos-cart { background:white; display:flex; flex-direction:column; min-height:0; overflow:hidden; border-top:5px solid var(--wine); }
 			.pos-cart-title { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee5df; padding-bottom:12px; }
-			.pos-cart-title h3 { margin:0; color:#2f1e27; }
+			.pos-cart-title h3 { margin:0; color:#2f1e27; font-size:19px; font-weight:850; }
 			.pos-cart-items { flex:1 1 auto; min-height:0; overflow:auto; }
 			.pos-cart-row { display:grid; grid-template-columns:1fr auto; gap:10px; padding:14px 0; border-bottom:1px solid #eee5df; }
 			.pos-cart-row strong { display:block; }
@@ -140,11 +140,11 @@ class RestaurantPOS {
 			.pos-qty button { width:28px; height:28px; border:1px solid #ddd0cb; background:#fff8f3; border-radius:8px; }
 			.pos-line-price { color:var(--wine); font-weight:800; text-align:right; }
 			.pos-remove { border:0; background:transparent; color:#d44; margin-top:8px; }
-			.pos-empty { color:#8a777e; text-align:center; padding:80px 15px; }
+			.pos-empty { color:#8a777e; text-align:center; padding:64px 15px; font-size:14px; line-height:1.8; }
 			.pos-totals { flex:0 0 auto; border-top:2px solid #eadfd5; margin-top:8px; padding-top:8px; }
 			.pos-total-line { display:flex; justify-content:space-between; padding:5px 0; }
-			.pos-total-line.final { color:var(--wine); font-size:21px; font-weight:800; }
-			.pos-complete { flex:0 0 auto; width:100%; border:0; border-radius:13px; padding:12px; margin-top:8px; background:#2faa4b; color:white; font-size:16px; font-weight:800; }
+			.pos-total-line.final { color:var(--wine); font-size:24px; font-weight:850; }
+			.pos-complete { flex:0 0 auto; width:100%; min-height:54px; border:0; border-radius:14px; padding:12px; margin-top:8px; background:#18833b; color:white; font-size:17px; font-weight:850; box-shadow:0 7px 18px rgba(24,131,59,.2); }
 			.pos-complete:disabled { opacity:.45; }
 			.pos-progress { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; }
 			.pos-progress button { border:0; border-radius:999px; padding:9px 13px; white-space:nowrap; background:#eadfd5; color:#6f5a63; }
@@ -182,8 +182,8 @@ class RestaurantPOS {
 		}
 		this.$root.append(`
 			<div class="pos-brand">
-				<div><h2>${__("Restaurant POS")}</h2><div class="text-muted">${__("Ice cream, pastry, drinks & coffee")}</div><div class="pos-cashier">${__("Cashier")}: ${frappe.utils.escape_html(this.cashier.employee_name)}</div><div class="pos-pwa-status"><span class="pos-status-pill demo">🧪 ${__("Demo Mode")}</span><span class="pos-status-pill ${this.online ? "online" : "offline"}">${this.online ? "● " + __("Online") : "● " + __("Offline")}</span><span class="pos-status-pill pending">💾 ${__("{0} saved demo order(s)", [this.get_demo_orders().length])}</span></div></div>
-				<div class="pos-brand-actions"><button class="btn btn-default pos-install">${__("Install App")}</button><button class="btn btn-default pos-clock">${__("Employee Clock")}</button><button class="btn btn-default pos-lock">${__("Lock POS")}</button><button class="btn btn-default pos-clear">${__("Clear Order")}</button><button class="btn btn-default pos-reset">${__("Reset Demo")}</button></div>
+				<div><h2>Häagen-Dazs POS</h2><div class="pos-cashier">${__("Cashier")}: ${frappe.utils.escape_html(this.cashier.employee_name)}</div><div class="pos-pwa-status"><span class="pos-status-pill demo">🧪 ${__("Demo")}</span><span class="pos-status-pill ${this.online ? "online" : "offline"}">${this.online ? "● " + __("Online") : "● " + __("Offline")}</span><span class="pos-status-pill pending">💾 ${__("{0} saved", [this.get_demo_orders().length])}</span></div></div>
+				<div class="pos-brand-actions"><button class="btn btn-default pos-clock">🕐 ${__("Clock")}</button><button class="btn btn-default pos-clear">🗑 ${__("Clear")}</button><button class="btn btn-default pos-lock">🔒 ${__("Lock")}</button><button class="btn btn-default pos-install">⬇ ${__("Install")}</button><button class="btn btn-default pos-reset">↺ ${__("Reset")}</button></div>
 			</div>
 		`);
 		this.$root.find(".pos-install").on("click", () => this.install_app());
@@ -397,11 +397,11 @@ class RestaurantPOS {
 
 	render_cart($container) {
 		const $title = $("<div class='pos-cart-title'>").appendTo($container);
-		$title.append(`<h3>${__("Order Summary")}</h3>`);
+		$title.append(`<h3>🧾 ${__("Current Order")}</h3>`);
 		$title.append($("<span class='text-muted'>").text(__("{0} item(s)", [this.item_count()])));
 		const $items = $("<div class='pos-cart-items'>").appendTo($container);
 		if (!this.cart.length)
-			$items.append(`<div class="pos-empty">🛒<br>${__("Tap a product to begin")}</div>`);
+			$items.append(`<div class="pos-empty"><div style="font-size:38px">🛍️</div><strong>${__("Ready for a new order")}</strong><br>${__("Tap a product to add it")}</div>`);
 		this.cart.forEach((item) => {
 			const $row = $("<div class='pos-cart-row'>").appendTo($items);
 			const $details = $("<div>").appendTo($row);
@@ -450,7 +450,7 @@ class RestaurantPOS {
 				"USD"
 			)}</strong></div>`
 		);
-		$(`<button class="pos-complete">${__("Complete Order")}</button>`)
+		$(`<button class="pos-complete">${__("Pay & Complete")}</button>`)
 			.prop("disabled", !this.cart.length)
 			.on("click", () => this.complete_order())
 			.appendTo($container);
