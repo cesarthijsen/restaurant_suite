@@ -329,7 +329,8 @@ class RestaurantPOS {
 		step.options.forEach((option) => {
 			const color = this.flavor_color(option.option_name);
 			const $button = $("<button type='button' class='pos-option'>").css("--flavor", color).data("search", option.option_name.toLowerCase());
-			const visual = option.image ? `<img src="${frappe.utils.escape_html(option.image)}" alt="">` : "🍨";
+			const image = option.image || this.demo_flavor_image(option.option_name);
+			const visual = image ? `<img src="${frappe.utils.escape_html(image)}" alt="">` : "🍨";
 			$button.append(`<span class="pos-option-visual">${visual}</span><span class="pos-option-check">✓</span>`);
 			$button.append($("<strong>").text(option.option_name));
 			$button.append($("<small>").text(__("Included")));
@@ -363,6 +364,25 @@ class RestaurantPOS {
 		}
 		return frappe.utils.escape_html(product.icon || "🍨");
 	}
+
+
+	demo_flavor_image(name) {
+		const value = String(name || "").toLowerCase();
+		const base = "/assets/restaurant_suite/images/demo/flavors/";
+		const families = [
+			[/cookies|cookie dough|macadamia/, "cookies-cream.webp"],
+			[/strawberry|raspberry|berry|mochi/, "strawberry.webp"],
+			[/mango|lemon sorbet/, "mango.webp"],
+			[/pistachio/, "pistachio.webp"],
+			[/caramel|dulce|biscuit/, "caramel.webp"],
+			[/coffee|tiramisu|rum raisin|praline/, "coffee.webp"],
+			[/chocolate|brownie|rocky|cocoa/, "chocolate.webp"],
+			[/vanilla|cream/, "vanilla.webp"],
+		];
+		const family = families.find(([pattern]) => pattern.test(value));
+		return family ? base + family[1] : base + "vanilla.webp";
+	}
+
 
 	flavor_color(name) {
 		const value = String(name || "").toLowerCase();
