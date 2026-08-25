@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090b0f">
+  <title>Reaction Run</title>
+  <style>
+    :root{--bg:#090b0f;--panel:#141820;--line:#2b313c;--text:#f7f8fa;--muted:#9ba5b4;--amber:#ffb000;--green:#28df79;--red:#ff3d4d;--cyan:#38d9ff}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+    body{background:radial-gradient(circle at 50% -10%,#263040 0,transparent 42%),linear-gradient(160deg,#090b0f,#10141b 62%,#08090c);overscroll-behavior:none}
+    button,select{font:inherit}
+    .app{width:min(1100px,100%);min-height:100svh;margin:auto;padding:max(18px,env(safe-area-inset-top)) 18px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900}.mark{width:38px;height:38px;border:2px solid var(--red);transform:skew(-12deg);display:grid;place-items:center;color:var(--red)}
+    .sound{border:1px solid var(--line);background:#11151c;color:var(--text);border-radius:999px;padding:10px 14px;cursor:pointer}
+    main{flex:1;display:grid;grid-template-columns:minmax(280px,460px) minmax(300px,1fr);align-items:center;gap:clamp(28px,6vw,80px);padding:28px 0}
+    .hero h1{font-size:clamp(42px,7vw,82px);line-height:.9;letter-spacing:-.055em;margin:0 0 16px;text-transform:uppercase}.hero h1 span{color:var(--red)}
+    .hero p{color:var(--muted);font-size:clamp(16px,2vw,19px);line-height:1.55;max-width:520px}
+    .controls{display:flex;gap:10px;margin:24px 0 18px}.mode{flex:1;border:1px solid var(--line);background:#12161d;color:var(--muted);padding:13px;border-radius:12px;cursor:pointer;font-weight:800}.mode.active{color:#111;background:var(--text);border-color:var(--text)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:rgba(20,24,32,.78);border:1px solid var(--line);border-radius:14px;padding:14px}.stat small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-size:10px}.stat strong{display:block;margin-top:5px;font-size:20px;font-variant-numeric:tabular-nums}
+    .game{position:relative;min-height:610px;background:linear-gradient(180deg,#181d26,#0c0f14);border:1px solid #313846;border-radius:28px;overflow:hidden;box-shadow:0 30px 80px #0009;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;touch-action:manipulation;cursor:pointer;user-select:none}
+    .game:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 48px,#ffffff05 49px 50px);pointer-events:none}
+    .stage{position:absolute;top:25px;text-align:center;z-index:2}.eyebrow{color:var(--muted);text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:800}.message{font-size:22px;font-weight:900;margin-top:5px;text-transform:uppercase}
+    .tree{position:relative;z-index:1;width:190px;background:#080a0d;border:5px solid #252a32;border-radius:26px;padding:26px 28px;box-shadow:inset 0 0 0 2px #000,0 22px 50px #000;display:grid;gap:13px}
+    .tree:after{content:"";position:absolute;width:22px;height:95px;background:#262b33;left:calc(50% - 11px);bottom:-98px;border-radius:0 0 7px 7px}
+    .row{display:flex;justify-content:center;gap:18px}.bulb{width:47px;height:47px;border-radius:50%;background:#191d23;border:4px solid #303640;box-shadow:inset 0 5px 12px #000b;transition:background .08s,box-shadow .08s,transform .08s}.bulb.on{transform:scale(1.05)}
+    .pre{width:28px;height:28px}.pre.on,.amber.on{background:var(--amber);box-shadow:0 0 10px var(--amber),0 0 28px #ffb000aa,inset 0 4px 9px #fff8}.green.on{background:var(--green);box-shadow:0 0 12px var(--green),0 0 35px #28df79aa,inset 0 4px 9px #fff8}.red.on{background:var(--red);box-shadow:0 0 12px var(--red),0 0 35px #ff3d4daa,inset 0 4px 9px #fff8}
+    .result{position:absolute;bottom:34px;text-align:center;z-index:2}.time{font-size:clamp(44px,8vw,70px);font-weight:950;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.04em}.verdict{margin-top:7px;color:var(--cyan);font-weight:800}.hint{position:absolute;right:16px;bottom:14px;color:#727b89;font-size:10px;text-transform:uppercase;letter-spacing:.12em}
+    footer{display:flex;justify-content:space-between;color:#737d8b;font-size:12px;border-top:1px solid #20252d;padding-top:15px}
+    @media(max-width:760px){main{grid-template-columns:1fr;padding-top:20px}.hero{text-align:center}.hero p{margin-left:auto;margin-right:auto}.game{min-height:580px}.controls,.stats{max-width:520px;margin-left:auto;margin-right:auto}footer{justify-content:center}.desktop-note{display:none}}
+    @media(max-width:420px){.app{padding-left:12px;padding-right:12px}.hero h1{font-size:42px}.game{min-height:535px;border-radius:22px}.tree{transform:scale(.9)}.stats .stat{padding:10px}.stat strong{font-size:17px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header><div class="brand"><span class="mark">RT</span><span>Reaction Run</span></div><button class="sound" id="sound" type="button" aria-label="Toggle sound">Sound: On</button></header>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Drag racing reaction challenge</div>
+        <h1>Cut a <span>light.</span></h1>
+        <p>Stage up, wait for the tree, then tap anywhere. Leave early and you go red. Perfect is <strong>.000</strong>—how close can you get?</p>
+        <div class="controls" role="group" aria-label="Tree type"><button class="mode active" data-mode="pro" type="button">Pro Tree</button><button class="mode" data-mode="sportsman" type="button">Sportsman</button></div>
+        <div class="stats"><div class="stat"><small>Best</small><strong id="best">—</strong></div><div class="stat"><small>Average</small><strong id="average">—</strong></div><div class="stat"><small>Runs</small><strong id="runs">0</strong></div></div>
+      </section>
+      <section class="game" id="game" tabindex="0" role="button" aria-label="Start reaction test, then tap when the green lights illuminate">
+        <div class="stage"><div class="eyebrow" id="statusLabel">Ready</div><div class="message" id="message">Tap to stage</div></div>
+        <div class="tree" aria-hidden="true">
+          <div class="row"><span class="bulb pre" data-light="pre"></span><span class="bulb pre" data-light="pre"></span></div>
+          <div class="row"><span class="bulb amber" data-light="a1"></span><span class="bulb amber" data-light="a1"></span></div>
+          <div class="row"><span class="bulb amber" data-light="a2"></span><span class="bulb amber" data-light="a2"></span></div>
+          <div class="row"><span class="bulb amber" data-light="a3"></span><span class="bulb amber" data-light="a3"></span></div>
+          <div class="row"><span class="bulb green" data-light="green"></span><span class="bulb green" data-light="green"></span></div>
+          <div class="row"><span class="bulb red" data-light="red"></span><span class="bulb red" data-light="red"></span></div>
+        </div>
+        <div class="result"><div class="time" id="time">.000</div><div class="verdict" id="verdict">Your lane is clear</div></div>
+        <div class="hint">Tap or press space</div>
+      </section>
+    </main>
+    <footer><span>For entertainment only. Never a sobriety test.</span><span class="desktop-note">Built for racers with questionable reflexes.</span></footer>
+  </div>
+  <script>
+    (function(){
+      var game=document.getElementById('game'),message=document.getElementById('message'),label=document.getElementById('statusLabel'),time=document.getElementById('time'),verdict=document.getElementById('verdict');
+      var state='idle',mode='pro',goAt=0,timers=[],results=[],soundOn=true,audio;
+      var jokes=[['Lightning! The car barely knew you left.'],['Sharp. Your rival is already making excuses.'],['Solid pass. No groceries spilled.'],['A little sleepy—but technically awake.'],['That reaction arrived by postal service.'],['Were you waiting for a written invitation?']];
+      function lights(name,on){document.querySelectorAll('[data-light="'+name+'"]').forEach(function(el){el.classList.toggle('on',on);});}
+      function clear(){timers.forEach(clearTimeout);timers=[];document.querySelectorAll('.bulb').forEach(function(el){el.classList.remove('on');});}
+      function tone(freq,duration){if(!soundOn)return;audio=audio||new(window.AudioContext||window.webkitAudioContext)();var o=audio.createOscillator(),g=audio.createGain();o.frequency.value=freq;o.connect(g);g.connect(audio.destination);g.gain.setValueAtTime(.06,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.start();o.stop(audio.currentTime+duration);}
+      function later(fn,ms){var id=setTimeout(fn,ms);timers.push(id);}
+      function start(){clear();state='waiting';label.textContent='Staged';message.textContent='Hold it…';time.textContent='.000';verdict.textContent='Wait for green';lights('pre',true);tone(340,.08);var delay=1100+Math.random()*1700;
+        if(mode==='pro'){later(function(){['a1','a2','a3'].forEach(function(x){lights(x,true);});tone(560,.1);},delay);later(go,delay+400);}
+        else{later(function(){lights('a1',true);tone(480,.08);},delay);later(function(){lights('a2',true);tone(520,.08);},delay+500);later(function(){lights('a3',true);tone(560,.08);},delay+1000);later(go,delay+1500);}}
+      function go(){['a1','a2','a3'].forEach(function(x){lights(x,false);});lights('green',true);state='green';goAt=performance.now();label.textContent='Go!';message.textContent='Hit it!';tone(880,.15);}
+      function falseStart(){clear();lights('red',true);state='result';label.textContent='Red light';message.textContent='Too soon';time.textContent='RED';verdict.textContent='Easy, hero—the green one means go.';tone(150,.3);}
+      function finish(){var ms=performance.now()-goAt,seconds=ms/1000;state='result';results.push(seconds);time.textContent=seconds.toFixed(3).replace(/^0/,'');label.textContent='Reaction';message.textContent='Run complete';var i=seconds<.16?0:seconds<.23?1:seconds<.32?2:seconds<.45?3:seconds<.65?4:5;verdict.textContent=jokes[i][0];updateStats();tone(720,.09);later(function(){tone(980,.12);},100);}
+      function updateStats(){var best=Math.min.apply(null,results),avg=results.reduce(function(a,b){return a+b;},0)/results.length;document.getElementById('best').textContent=best.toFixed(3);document.getElementById('average').textContent=avg.toFixed(3);document.getElementById('runs').textContent=results.length;}
+      function act(){if(state==='idle'||state==='result')start();else if(state==='waiting')falseStart();else if(state==='green')finish();}
+      game.addEventListener('pointerdown',function(e){e.preventDefault();act();});game.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();act();}});
+      document.querySelectorAll('.mode').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();clear();state='idle';mode=btn.dataset.mode;document.querySelectorAll('.mode').forEach(function(b){b.classList.toggle('active',b===btn);});label.textContent='Ready';message.textContent='Tap to stage';verdict.textContent=mode==='pro'?'All ambers flash together':'Ambers count down';});});
+      document.getElementById('sound').addEventListener('click',function(){soundOn=!soundOn;this.textContent='Sound: '+(soundOn?'On':'Off');});
+    })();
+  </script>
+</body>
+</html>
+
